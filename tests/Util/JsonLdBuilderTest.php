@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Kikmedia\GroundingPageBundle\Tests\Util;
 
-use Contao\TestCase\ContaoTestCase;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Tests\ModelMockTrait;
 use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
+use PHPUnit\Framework\TestCase;
 
-class JsonLdBuilderTest extends ContaoTestCase
+class JsonLdBuilderTest extends TestCase
 {
+    use ModelMockTrait;
+
     public function testBuildsEntityJsonLd(): void
     {
-        $entry = $this->mockClassWithProperties(GroundingPageModel::class, [
+        $entry = $this->mockModel(GroundingPageModel::class, [
             'entityType' => 'Organization',
             'entityTypeCustom' => '',
             'title' => 'VeloNova',
@@ -38,7 +41,7 @@ class JsonLdBuilderTest extends ContaoTestCase
 
     public function testUsesCustomEntityType(): void
     {
-        $entry = $this->mockClassWithProperties(GroundingPageModel::class, [
+        $entry = $this->mockModel(GroundingPageModel::class, [
             'entityType' => 'other',
             'entityTypeCustom' => 'DefinedTerm',
             'title' => 'Grounding Page',
@@ -57,7 +60,7 @@ class JsonLdBuilderTest extends ContaoTestCase
 
     public function testBuildsCitationsFromSources(): void
     {
-        $entry = $this->mockClassWithProperties(GroundingPageModel::class, [
+        $entry = $this->mockModel(GroundingPageModel::class, [
             'entityType' => 'Organization',
             'entityTypeCustom' => '',
             'title' => 'VeloNova',

@@ -147,7 +147,7 @@ composer cs-fix       # PHP-CS-Fixer, wendet Korrekturen an
 
 Die GitHub-Actions-Pipeline ([.github/workflows/ci.yml](.github/workflows/ci.yml)) führt `composer validate`, PHP-Lint, einen `composer install`-Kompatibilitätstest gegen Contao `5.3.*`/`6.0.*` (jeweils niedrigste/höchste Abhängigkeiten) sowie PHPUnit, PHPStan und PHP-CS-Fixer bei jedem Push/PR aus.
 
-Die Testsuite deckt aktuell die reine Logik ab, die ohne DB/Container testbar ist (`JsonLdBuilder`, `GroundingPageFaqController::extractItems()`, gemockt über `Contao\TestCase\ContaoTestCase`). DCA-Callbacks und die Sitemap-/Berechtigungs-Listener sind wegen ihrer Kopplung an Contao-Statics (`Database`, `PageModel`, Model-Registry) nicht unit-, sondern eher funktional/manuell zu testen.
+Die Testsuite deckt aktuell die reine Logik ab, die ohne DB/Container testbar ist (`JsonLdBuilder`, `GroundingPageFaqController::extractItems()`). Models werden dafür über `tests/ModelMockTrait` per Reflection gemockt (setzt `Contao\Model::$arrData` direkt, ohne Konstruktor/DB) – bewusst ohne Abhängigkeit auf `contao/test-case`, dessen `^5.3`-Reihe PHPUnit auf `^9.5` fixiert und damit mit PHPUnit 11 kollidiert. DCA-Callbacks und die Sitemap-/Berechtigungs-Listener sind wegen ihrer Kopplung an Contao-Statics (`Database`, `PageModel`, Model-Registry) nicht unit-, sondern eher funktional/manuell zu testen.
 
 ## Umfang
 
