@@ -95,7 +95,7 @@ Die Durchsetzung erfolgt in `Kikmedia\GroundingPageBundle\EventListener\DataCont
 
 ## Sitemap-Integration
 
-`Kikmedia\GroundingPageBundle\EventListener\SitemapListener` hört auf das Contao-Event `contao.sitemap` und fügt jeden veröffentlichten Eintrag mit `addUrlToDefaultUrlSet()` in die generierte `sitemap.xml` ein (URL = Weiterleitungsseite des Archivs + Alias/ID). Der Listener filtert dabei nach Website-Root: ein Eintrag landet nur in der Sitemap des Root, zu dem seine Weiterleitungsseite gehört (`PageModel::rootId` vs. `SitemapEvent::getRootPageId()`) – Multi-Domain-/Multi-Root-Installationen erhalten dadurch pro Root nur die tatsächlich zugehörigen Einträge.
+`Kikmedia\GroundingPageBundle\EventListener\SitemapListener` hört auf das Contao-Event `contao.sitemap` und fügt jeden veröffentlichten Eintrag mit `addUrlToDefaultUrlSet()` in die generierte `sitemap.xml` ein (URL = Weiterleitungsseite des Archivs + Alias/ID). Der Listener filtert dabei nach Website-Root: ein Eintrag landet nur in der Sitemap des Root, zu dem seine Weiterleitungsseite gehört (`PageModel::rootId` vs. `SitemapEvent::getRootPageIds()`) – Multi-Domain-/Multi-Root-Installationen erhalten dadurch pro Root nur die tatsächlich zugehörigen Einträge.
 
 ## Contao-5/6-Standardstruktur (validiert)
 

@@ -37,7 +37,7 @@ class SitemapListener
 
             $page->loadDetails();
 
-            if ((int) $page->rootId !== $event->getRootPageId()) {
+            if (!\in_array((int) $page->rootId, $event->getRootPageIds(), true)) {
                 continue;
             }
 

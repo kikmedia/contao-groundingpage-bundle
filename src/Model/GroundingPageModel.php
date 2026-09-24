@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Kikmedia\GroundingPageBundle\Model;
 
+use Contao\Database;
 use Contao\Model;
 use Contao\Model\Collection;
+use Contao\System;
 
 class GroundingPageModel extends Model
 {
@@ -16,7 +18,7 @@ class GroundingPageModel extends Model
         $t = static::$strTable;
         $arrColumns = is_numeric($idOrAlias) ? ["$t.id=?"] : ["$t.alias=?"];
 
-        if (BE_USER_LOGGED_IN !== true) {
+        if (!self::hasBackendUser()) {
             $arrColumns[] = "$t.published='1'";
         }
 
@@ -32,7 +34,7 @@ class GroundingPageModel extends Model
         $t = static::$strTable;
         $arrColumns = ["$t.pid IN (" . implode(',', array_map('\intval', $archiveIds)) . ')'];
 
-        if (BE_USER_LOGGED_IN !== true) {
+        if (!self::hasBackendUser()) {
             $arrColumns[] = "$t.published='1'";
         }
 
@@ -59,14 +61,14 @@ class GroundingPageModel extends Model
         $t = static::$strTable;
         $arrColumns = ["$t.id IN (" . implode(',', array_map('\intval', $ids)) . ')'];
 
-        if ($publishedOnly && BE_USER_LOGGED_IN !== true) {
+        if ($publishedOnly && !self::hasBackendUser()) {
             $arrColumns[] = "$t.published='1'";
         }
 
         return static::findBy(
             $arrColumns,
             null,
-            ['order' => \Database::getInstance()->findInSet("$t.id", $ids)]
+            ['order' => Database::getInstance()->findInSet("$t.id", $ids)]
         );
     }
 
@@ -79,10 +81,15 @@ class GroundingPageModel extends Model
         $t = static::$strTable;
         $arrColumns = ["$t.pid IN (" . implode(',', array_map('\intval', $archiveIds)) . ')'];
 
-        if (BE_USER_LOGGED_IN !== true) {
+        if (!self::hasBackendUser()) {
             $arrColumns[] = "$t.published='1'";
         }
 
         return static::countBy($arrColumns);
+    }
+
+    private static function hasBackendUser(): bool
+    {
+        return System::getContainer()->get('contao.security.token_checker')->hasBackendUser();
     }
 }

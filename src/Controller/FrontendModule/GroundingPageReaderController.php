@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kikmedia\GroundingPageBundle\Controller\FrontendModule;
 
-use Contao\ContentElement as ContaoContentElement;
 use Contao\ContentModel;
+use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Twig\FragmentTemplate;
@@ -75,7 +75,7 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
 
         if (null !== $elements) {
             foreach ($elements as $element) {
-                $buffer .= (new ContaoContentElement($element))->generate();
+                $buffer .= Controller::getContentElement($element);
             }
         }
 

@@ -4,9 +4,9 @@ parameters:
         - src
     excludePaths:
         - src/ContaoManager
+    bootstrapFiles:
+        - vendor/autoload.php
+    reportUnmatchedIgnoredErrors: false
     ignoreErrors:
-        - '#Access to an undefined property Contao\\Model#'
-        - '#Access to an undefined property Contao\\Model\\Collection#'
-        - '#Call to an undefined method Contao\\Model(\\Collection)?::#'
-        - '#Access to an undefined property Contao\\DataContainer#'
-        - '#Access to an undefined property Contao\\Template#'
+        - '#^Access to an undefined property [\w\\]*(Model|Template|BackendUser)::\$#'
+        - '#^Call to an undefined method [\w\\]*(Model|Collection)::#'
