@@ -9,6 +9,7 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Contao\StringUtil;
+use Kikmedia\GroundingPageBundle\Model\GroundingPageArchiveModel;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,10 +45,10 @@ class GroundingPageListController extends AbstractFrontendModuleController
 
     private function generateEntryUrl(GroundingPageModel $entry): string
     {
-        $archive = $entry->getRelated('pid');
+        $archive = GroundingPageArchiveModel::findById($entry->pid);
         $params  = '/' . ($entry->alias ?: $entry->id);
 
-        if ($archive && $archive->jumpTo) {
+        if (null !== $archive && $archive->jumpTo) {
             $page = \Contao\PageModel::findPublishedById($archive->jumpTo);
 
             if (null !== $page) {

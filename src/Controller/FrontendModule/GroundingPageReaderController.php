@@ -17,7 +17,7 @@ use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\PageNotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[AsFrontendModule('grounding_page_reader', category: 'grounding_page')]
 class GroundingPageReaderController extends AbstractFrontendModuleController
@@ -27,13 +27,13 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $idOrAlias = Input::get('auto_item');
 
         if (null === $idOrAlias) {
-            throw new PageNotFoundHttpException('Missing auto_item parameter.');
+            throw new NotFoundHttpException('Missing auto_item parameter.');
         }
 
         $entry = GroundingPageModel::findPublishedByIdOrAlias((string) $idOrAlias);
 
         if (null === $entry) {
-            throw new PageNotFoundHttpException('Grounding page entry not found.');
+            throw new NotFoundHttpException('Grounding page entry not found.');
         }
 
         $template->title = $entry->title;
