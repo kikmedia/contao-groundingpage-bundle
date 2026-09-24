@@ -6,11 +6,15 @@ Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1
 
 ### Added
 - Root-Page-Filter im `SitemapListener`: Einträge erscheinen nur noch in der Sitemap des Website-Root, zu dem ihre Weiterleitungsseite gehört (`PageModel::rootId` vs. `SitemapEvent::getRootPageIds()`).
-- Content-Element „Grounding-Page FAQ“ (`grounding_page_faq`): Frage/Antwort-Paare (`faqItems`, `optionWizard`), gerendert als `<dl>`-Liste.
+- Content-Element „Grounding-Page FAQ“ (`grounding_page_faq`): Frage/Antwort-Paare (`groundingPageItems`, `optionWizard`), gerendert als `<dl>`-Liste.
 - `JsonLdBuilder::buildFaqPage()` und Integration im Reader: Enthält ein Eintrag mindestens ein vollständiges FAQ-Element, wird zusätzlich zum Entitäts-JSON-LD ein `https://schema.org/FAQPage`-Block mit `mainEntity` (`Question`/`acceptedAnswer`) ausgegeben.
 - Twig-Templates unter `templates/frontend_module/` und `templates/content_element/` als Äquivalent zu den bestehenden PHP-Templates (Liste, Reader, FAQ-Content-Element).
 - PHPUnit-Testsuite (`tests/`) für `JsonLdBuilder` und `GroundingPageFaqController::extractItems()`, PHPStan (Level 3, `phpstan.neon.dist`) und PHP-CS-Fixer (`.php-cs-fixer.dist.php`), inkl. `composer test`/`phpstan`/`cs-check`/`cs-fix` Scripts.
 - CI-Jobs für PHPUnit, PHPStan und PHP-CS-Fixer in `.github/workflows/ci.yml`.
+- `contao/config/config.php`: `$GLOBALS['BE_MOD']['content']['grounding_page']` registriert – ohne diesen Eintrag gab es keinerlei Navigationspunkt im Backend, um Archive/Einträge zu verwalten (die DCAs existierten, waren aber unerreichbar).
+
+### Changed
+- `tl_content`-Feld des FAQ-Content-Elements von `faqItems` auf `groundingPageItems` umbenannt: `tl_content` ist eine von allen Bundles gemeinsam genutzte Tabelle, ein generischer Name wie `faqItems` hätte mit Feldern anderer Extensions kollidieren können.
 
 ### Changed
 - Paketname von `grounding/page-bundle` auf `kikmedia/contao-groundingpage-bundle` geändert, PHP-Namespace von `Grounding\PageBundle\` auf `Kikmedia\GroundingPageBundle\`, `composer.json`-Metadaten (`homepage`, `support`) auf das tatsächliche GitHub-Repository umgestellt.

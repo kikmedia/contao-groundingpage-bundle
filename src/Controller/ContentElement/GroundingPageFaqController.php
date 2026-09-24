@@ -17,14 +17,14 @@ class GroundingPageFaqController extends AbstractContentElementController
 {
     protected function getResponse(FragmentTemplate $template, ContentModel $model, Request $request): Response
     {
-        $template->items = self::extractItems($model->faqItems);
+        $template->items = self::extractItems($model->groundingPageItems);
 
         return $template->getResponse();
     }
 
-    public static function extractItems(mixed $rawFaqItems): array
+    public static function extractItems(mixed $rawItems): array
     {
-        $items = (array) StringUtil::deserialize($rawFaqItems, true);
+        $items = (array) StringUtil::deserialize($rawItems, true);
 
         return array_values(array_filter(
             $items,

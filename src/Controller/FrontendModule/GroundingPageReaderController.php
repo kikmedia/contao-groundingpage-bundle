@@ -92,7 +92,7 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
 
         foreach ($elements as $element) {
             if ('grounding_page_faq' === $element->type) {
-                array_push($items, ...GroundingPageFaqController::extractItems($element->faqItems));
+                array_push($items, ...GroundingPageFaqController::extractItems($element->groundingPageItems));
             }
         }
 

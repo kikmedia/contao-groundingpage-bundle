@@ -78,7 +78,7 @@ Enthält der Eintrag mindestens ein Content-Element **„Grounding-Page FAQ“**
 
 ## FAQ-Content-Element
 
-Das Content-Element **„Grounding-Page FAQ“** (`grounding_page_faq`, Kategorie „Grounding-Page“) steht wie jedes andere Content-Element innerhalb der `ctable` eines Eintrags zur Verfügung. Es besitzt ein Feld `faqItems` (Frage/Antwort-Paare, `optionWizard`) und rendert diese als `<dl>`-Liste. Mehrere FAQ-Elemente innerhalb desselben Eintrags werden im JSON-LD zu einer gemeinsamen `FAQPage` zusammengeführt.
+Das Content-Element **„Grounding-Page FAQ“** (`grounding_page_faq`, Kategorie „Grounding-Page“) steht wie jedes andere Content-Element innerhalb der `ctable` eines Eintrags zur Verfügung. Es besitzt ein Feld `groundingPageItems` (Frage/Antwort-Paare, `optionWizard`) und rendert diese als `<dl>`-Liste. Mehrere FAQ-Elemente innerhalb desselben Eintrags werden im JSON-LD zu einer gemeinsamen `FAQPage` zusammengeführt.
 
 ## Twig-Templates
 
@@ -107,6 +107,7 @@ contao-groundingpage-bundle/
 ├── config/
 │   └── services.yaml
 ├── contao/
+│   ├── config/config.php          (BE_MOD-Registrierung)
 │   ├── dca/
 │   ├── languages/{de,en}/
 │   └── templates/{frontend_module,content_element}/
