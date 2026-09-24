@@ -7,16 +7,10 @@ namespace Grounding\PageBundle\Model;
 use Contao\Model;
 use Contao\Model\Collection;
 
-/**
- * Reads and writes Grounding-Page entries (tl_grounding_page).
- */
 class GroundingPageModel extends Model
 {
     protected static $strTable = 'tl_grounding_page';
 
-    /**
-     * Find a published entry by its ID or alias.
-     */
     public static function findPublishedByIdOrAlias(string $idOrAlias): self|null
     {
         $t = static::$strTable;
@@ -29,9 +23,6 @@ class GroundingPageModel extends Model
         return static::findOneBy($arrColumns, $idOrAlias);
     }
 
-    /**
-     * Find all published entries of one or more archives.
-     */
     public static function findPublishedByPids(array $archiveIds, array $options = []): Collection|null
     {
         if (empty($archiveIds)) {
@@ -52,9 +43,6 @@ class GroundingPageModel extends Model
         return static::findBy($arrColumns, null, $options);
     }
 
-    /**
-     * Find all published entries (used by the sitemap listener).
-     */
     public static function findAllPublished(): Collection|null
     {
         $t = static::$strTable;
@@ -62,10 +50,6 @@ class GroundingPageModel extends Model
         return static::findBy(["$t.published='1'"], null, ['order' => "$t.sorting"]);
     }
 
-    /**
-     * Find multiple (published) entries by their IDs, in the given order –
-     * used to resolve "related pages".
-     */
     public static function findMultipleByIds(array $ids, bool $publishedOnly = true): Collection|null
     {
         if (empty($ids)) {
@@ -86,9 +70,6 @@ class GroundingPageModel extends Model
         );
     }
 
-    /**
-     * Count published entries of one or more archives.
-     */
     public static function countPublishedByPids(array $archiveIds): int
     {
         if (empty($archiveIds)) {

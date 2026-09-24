@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
-// Palette für die beiden neuen Frontend-Module erweitern
 PaletteManipulator::create()
     ->addLegend('grounding_page_legend', 'config_legend', PaletteManipulator::POSITION_AFTER)
     ->addField('grounding_page_archives', 'grounding_page_legend', PaletteManipulator::POSITION_APPEND)

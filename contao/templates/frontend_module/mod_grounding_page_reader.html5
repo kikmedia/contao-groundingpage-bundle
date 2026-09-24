@@ -1,5 +1,3 @@
-<!-- Standard reference kept discreet, per groundingpage.com/spec:
-     Grounding Page Standard v1.6 -->
 <article class="<?= $this->class ?> block">
 
   <h1><?= $this->title ?></h1>

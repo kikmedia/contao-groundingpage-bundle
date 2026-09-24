@@ -13,10 +13,6 @@ use Grounding\PageBundle\Model\GroundingPageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Frontend-Modul "grounding_page_list": listet die veröffentlichten Einträge
- * eines oder mehrerer Grounding-Page-Archive auf.
- */
 #[AsFrontendModule('grounding_page_list', category: 'grounding_page')]
 class GroundingPageListController extends AbstractFrontendModuleController
 {

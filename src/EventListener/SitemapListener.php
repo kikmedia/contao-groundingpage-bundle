@@ -11,18 +11,6 @@ use Grounding\PageBundle\Model\GroundingPageArchiveModel;
 use Grounding\PageBundle\Model\GroundingPageModel;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-/**
- * Adds all published Grounding-Page entries to sitemap.xml, so they are
- * discoverable exactly like regular pages (§11 "Internal linking" of the
- * Grounding Page Standard explicitly requires pages to be reachable
- * through the normal site, not only via a card overview).
- *
- * Simplification: this adds every published entry to every generated
- * sitemap, without checking which website root/domain it belongs to. On a
- * single-root/single-domain installation that is exactly right. On a
- * multi-root Contao installation, add a root-page check here (e.g. via
- * $archive->jumpTo's root page) before enabling this on production.
- */
 #[AsEventListener(ContaoCoreEvents::SITEMAP)]
 class SitemapListener
 {

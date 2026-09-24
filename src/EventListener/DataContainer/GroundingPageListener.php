@@ -16,20 +16,12 @@ use Contao\System;
 use Grounding\PageBundle\Model\GroundingPageModel;
 use Symfony\Bundle\SecurityBundle\Security;
 
-/**
- * Callback service registered in the DCA of tl_grounding_page(_archive) under
- * the service id "grounding_page.listener" (see config/services.yaml).
- */
 class GroundingPageListener extends Backend
 {
     public function __construct(private readonly Security $security)
     {
         parent::__construct();
     }
-
-    // ------------------------------------------------------------------
-    // Alias
-    // ------------------------------------------------------------------
 
     public function generateAlias(string $varValue, DataContainer $dc): string
     {
@@ -54,9 +46,6 @@ class GroundingPageListener extends Backend
         return $varValue;
     }
 
-    /**
-     * Unpublish a copied entry so copies do not go live automatically.
-     */
     public function resetOnCopy(int $insertId): void
     {
         Database::getInstance()
@@ -64,9 +53,6 @@ class GroundingPageListener extends Backend
             ->execute('', $insertId);
     }
 
-    /**
-     * Render one row in the "child_record_callback" list view.
-     */
     public function listEntries(array $row): string
     {
         $label = StringUtil::specialchars($row['title']);
@@ -81,14 +67,6 @@ class GroundingPageListener extends Backend
         );
     }
 
-    // ------------------------------------------------------------------
-    // Permissions ("Grounding-Pages" back end user group)
-    // ------------------------------------------------------------------
-
-    /**
-     * Restrict access to tl_grounding_page_archive to the archives the
-     * current user (or one of their groups) is permitted to manage.
-     */
     public function checkArchivePermission(): void
     {
         $user = $this->security->getUser();
@@ -117,10 +95,6 @@ class GroundingPageListener extends Backend
         }
     }
 
-    /**
-     * Restrict access to tl_grounding_page entries to the archives the
-     * current user (or one of their groups) is permitted to manage.
-     */
     public function checkPermission(): void
     {
         $user = $this->security->getUser();
@@ -145,12 +119,6 @@ class GroundingPageListener extends Backend
         }
     }
 
-    /**
-     * Collect the archive IDs a user is allowed to manage, merged from
-     * the user record and all of its groups.
-     *
-     * @return array<int>
-     */
     private function getPermittedArchiveIds(BackendUser $user): array
     {
         $ids = StringUtil::deserialize($user->groundingPages, true);
@@ -162,12 +130,6 @@ class GroundingPageListener extends Backend
         return array_unique(array_map('\intval', $ids));
     }
 
-    /**
-     * Collect the "create"/"delete" permissions a user has, merged from
-     * the user record and all of its groups.
-     *
-     * @return array<string>
-     */
     private function getPermittedOperations(BackendUser $user): array
     {
         $ops = StringUtil::deserialize($user->groundingPagep, true);
@@ -179,9 +141,6 @@ class GroundingPageListener extends Backend
         return array_unique($ops);
     }
 
-    /**
-     * @return array<mixed>
-     */
     private function getGroupRows(BackendUser $user, string $column): array
     {
         $groupIds = StringUtil::deserialize($user->groups, true);

@@ -9,7 +9,6 @@ services:
         exclude:
             - '../src/{ContaoManager,Model,GroundingPageBundle.php}'
 
-    # Öffentlicher Alias, damit die DCA-Callbacks ihn per Service-ID referenzieren können.
     grounding_page.listener:
         alias: Grounding\PageBundle\EventListener\DataContainer\GroundingPageListener
         public: true

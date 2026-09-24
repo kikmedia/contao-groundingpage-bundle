@@ -5,25 +5,6 @@ declare(strict_types=1);
 use Contao\DataContainer;
 use Contao\DC_Table;
 
-/**
- * tl_grounding_page
- *
- * Ein Eintrag entspricht einer "Grounding Page" nach dem Grounding Page
- * Standard (https://groundingpage.com/spec/): eine faktenbasierte,
- * maschinenlesbar gespiegelte Referenzseite zu genau einer Entität.
- *
- * Pflichtblöcke des Standards und ihre Entsprechung hier:
- *   - H1 mit Entitätsname                → title
- *   - Eindeutige Lead-Definition          → definition, placement, distinction
- *   - Schema.org-Entitätstyp              → entityType / entityTypeCustom
- *   - Sichtbare, strukturierte Fakten     → coreFacts (Attribut/Wert-Paare)
- *   - Quellen & Aktualität                → sources, lastReviewed
- *   - Selbstständige H2-Abschnitte        → Content-Elemente (ctable tl_content)
- *   - Interne Verlinkung verwandter       → relatedPages
- *     Entitäten
- *   - JSON-LD-Spiegelung                  → wird zur Laufzeit im
- *                                            GroundingPageReaderController erzeugt
- */
 $GLOBALS['TL_DCA']['tl_grounding_page'] = [
     'config' => [
         'dataContainer'    => DC_Table::class,

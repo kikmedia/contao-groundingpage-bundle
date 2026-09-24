@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
-/**
- * Dieselben Felder wie in tl_user_group, für den Fall, dass ein Benutzer
- * individuelle (nicht von der Gruppe geerbte) Berechtigungen erhält
- * ("extend"-Palette, siehe Contao-Kernfelder wie z. B. "alexf").
- */
 PaletteManipulator::create()
     ->addLegend('grounding_page_legend', 'amg_legend', PaletteManipulator::POSITION_BEFORE)
     ->addField(['groundingPages', 'groundingPagep'], 'grounding_page_legend', PaletteManipulator::POSITION_APPEND)

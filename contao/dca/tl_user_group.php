@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
-/**
- * Eigene Berechtigungsgruppe "Grounding-Pages": legt fest, welche Archive
- * (tl_grounding_page_archive) eine Benutzergruppe verwalten darf und ob sie
- * neue Archive anlegen bzw. Archive/Einträge löschen darf.
- */
 PaletteManipulator::create()
     ->addLegend('grounding_page_legend', 'amg_legend', PaletteManipulator::POSITION_BEFORE)
     ->addField(['groundingPages', 'groundingPagep'], 'grounding_page_legend', PaletteManipulator::POSITION_APPEND)

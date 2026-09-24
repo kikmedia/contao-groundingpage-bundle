@@ -18,13 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\PageNotFoundHttpException;
 
-/**
- * Frontend-Modul "grounding_page_reader": zeigt einen einzelnen Eintrag
- * (eine "Grounding Page") anhand von auto_item (Alias/ID aus der URL) an –
- * inklusive Lead-Definition, strukturierten Fakten, Quellen, verwandten
- * Entitäten, den Content-Elementen (self-contained H2 sections) und dem
- * gespiegelten JSON-LD-Block.
- */
 #[AsFrontendModule('grounding_page_reader', category: 'grounding_page')]
 class GroundingPageReaderController extends AbstractFrontendModuleController
 {
@@ -86,9 +79,6 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         return $buffer;
     }
 
-    /**
-     * @return array<int, array{title: string, href: string}>
-     */
     private function getRelatedPages(GroundingPageModel $entry): array
     {
         $ids = StringUtil::deserialize($entry->relatedPages, true);

@@ -7,15 +7,6 @@ namespace Grounding\PageBundle\Util;
 use Contao\StringUtil;
 use Grounding\PageBundle\Model\GroundingPageModel;
 
-/**
- * Builds the JSON-LD representation of a Grounding-Page entry.
- *
- * Per the Grounding Page Standard (§9 "JSON-LD and mirroring"), the
- * structured data must mirror the visible content 1:1 – no additional
- * marketing claims that are invisible on the page. Every value used here
- * therefore comes directly from a field that is also rendered visibly by
- * the reader template.
- */
 final class JsonLdBuilder
 {
     public static function build(GroundingPageModel $entry, string $canonicalUrl): string
@@ -78,8 +69,6 @@ final class JsonLdBuilder
             )));
         }
 
-        // Remove empty/null keys so the JSON-LD never contains data that
-        // is not also visible on the page.
         $data = array_filter($data, static fn ($value) => null !== $value && '' !== $value && [] !== $value);
 
         return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?: '{}';
