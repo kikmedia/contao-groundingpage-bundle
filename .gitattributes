@@ -1,0 +1,15 @@
+* text=auto eol=lf
+
+*.php text eol=lf
+*.html5 text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+
+# Files/directories that are only relevant for developing this bundle
+# itself and should not be shipped in `composer create-project`/source
+# archive exports (e.g. `composer archive`, GitHub "Download ZIP").
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore

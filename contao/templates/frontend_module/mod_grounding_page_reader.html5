@@ -1,0 +1,65 @@
+<!-- Standard reference kept discreet, per groundingpage.com/spec:
+     Grounding Page Standard v1.6 -->
+<article class="<?= $this->class ?> block">
+
+  <h1><?= $this->title ?></h1>
+
+  <?php if ($this->addImage && $this->image): ?>
+    <?= $this->image ?>
+  <?php endif; ?>
+
+  <?php if ($this->definition): ?>
+    <p><strong><?= $this->title ?></strong> <?= $this->definition ?></p>
+  <?php endif; ?>
+  <?php if ($this->placement): ?>
+    <p><?= $this->placement ?></p>
+  <?php endif; ?>
+  <?php if ($this->distinction): ?>
+    <p><?= $this->distinction ?></p>
+  <?php endif; ?>
+
+  <?php if (!empty($this->coreFacts)): ?>
+    <h2><?= $this->title ?>: Kerndaten</h2>
+    <dl>
+      <?php foreach ($this->coreFacts as $fact): ?>
+        <?php if (!empty($fact['label']) && isset($fact['value']) && '' !== $fact['value']): ?>
+          <dt><?= $fact['label'] ?></dt>
+          <dd><?= $fact['value'] ?></dd>
+        <?php endif; ?>
+      <?php endforeach; ?>
+      <?php if ($this->lastReviewed): ?>
+        <dt>Zuletzt geprüft</dt>
+        <dd><?= $this->lastReviewed ?></dd>
+      <?php endif; ?>
+    </dl>
+  <?php endif; ?>
+
+  <?php if ($this->content): ?>
+    <?= $this->content ?>
+  <?php endif; ?>
+
+  <?php if (!empty($this->relatedPages)): ?>
+    <p>
+      Verwandt:
+      <?php foreach ($this->relatedPages as $i => $related): ?><?= $i > 0 ? ' · ' : '' ?><a href="<?= $related['href'] ?>"><?= $related['title'] ?></a><?php endforeach; ?>
+    </p>
+  <?php endif; ?>
+
+  <?php if (!empty($this->sources)): ?>
+    <h2>Quellen</h2>
+    <ul>
+      <?php foreach ($this->sources as $source): ?>
+        <?php if (!empty($source['value'])): ?>
+          <li><a href="<?= $source['value'] ?>" rel="noreferrer noopener" target="_blank"><?= $source['label'] ?: $source['value'] ?></a></li>
+        <?php endif; ?>
+      <?php endforeach; ?>
+    </ul>
+  <?php endif; ?>
+
+</article>
+
+<?php if ($this->jsonLd): ?>
+<script type="application/ld+json">
+<?= $this->jsonLd ?>
+</script>
+<?php endif; ?>

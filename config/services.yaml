@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Grounding\PageBundle\:
+        resource: '../src/'
+        exclude:
+            - '../src/{ContaoManager,Model,GroundingPageBundle.php}'
+
+    # Öffentlicher Alias, damit die DCA-Callbacks ihn per Service-ID referenzieren können.
+    grounding_page.listener:
+        alias: Grounding\PageBundle\EventListener\DataContainer\GroundingPageListener
+        public: true

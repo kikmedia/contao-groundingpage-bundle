@@ -1,0 +1,25 @@
+<div class="<?= $this->class ?> block" itemscope itemtype="https://schema.org/ItemList">
+  <?php if ($this->headline): ?>
+    <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+  <?php endif; ?>
+
+  <?php if (empty($this->items)): ?>
+    <p><?= $this->empty ?></p>
+  <?php else: ?>
+    <ul>
+      <?php foreach ($this->items as $item): ?>
+        <li itemprop="itemListElement">
+          <a href="<?= $item['href'] ?>" itemprop="url">
+            <span itemprop="name"><?= $item['title'] ?></span>
+          </a>
+          <?php if ($item['entityType']): ?>
+            <span> (<?= $item['entityType'] ?>)</span>
+          <?php endif; ?>
+          <?php if ($item['definition']): ?>
+            <p><?= $item['definition'] ?></p>
+          <?php endif; ?>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+  <?php endif; ?>
+</div>

@@ -1,0 +1,16 @@
+/vendor/
+composer.lock
+.DS_Store
+# macOS / Apple-Metadaten
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.DocumentRevisions-V100
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent

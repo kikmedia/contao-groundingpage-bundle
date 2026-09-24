@@ -1,0 +1,38 @@
+{
+    "name": "grounding/page-bundle",
+    "type": "contao-bundle",
+    "description": "Grounding-Page Extension für Contao 5 & 6: Backend-Verwaltung und Frontend-Ausgabe von Referenzseiten nach dem Grounding Page Standard (groundingpage.com/spec), inkl. JSON-LD-Spiegelung, eigener Backend-Berechtigungsgruppe und Sitemap-Integration.",
+    "keywords": ["contao", "grounding page", "ai seo", "json-ld", "structured data", "schema.org"],
+    "license": "LGPL-3.0-or-later",
+    "homepage": "https://example.com/grounding-page-bundle",
+    "authors": [
+        {
+            "name": "Ihr Name",
+            "email": "info@example.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/your-org/grounding-page-bundle/issues",
+        "source": "https://github.com/your-org/grounding-page-bundle"
+    },
+    "require": {
+        "php": "^8.1",
+        "contao/core-bundle": "^5.3 || ^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Grounding\\PageBundle\\": "src/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Grounding\\PageBundle\\ContaoManager\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": true,
+            "contao/manager-plugin": true
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "stable"
+}
