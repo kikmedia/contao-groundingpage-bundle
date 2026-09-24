@@ -1,0 +1,69 @@
+<article class="{{ class }} block">
+
+  <h1>{{ title }}</h1>
+
+  {% if addImage and image %}
+    {{ image|raw }}
+  {% endif %}
+
+  {% if definition %}
+    <p><strong>{{ title }}</strong> {{ definition }}</p>
+  {% endif %}
+  {% if placement %}
+    <p>{{ placement }}</p>
+  {% endif %}
+  {% if distinction %}
+    <p>{{ distinction }}</p>
+  {% endif %}
+
+  {% if coreFacts %}
+    <h2>{{ title }}: Kerndaten</h2>
+    <dl>
+      {% for fact in coreFacts %}
+        {% if fact.label is defined and fact.label and fact.value is defined and fact.value != '' %}
+          <dt>{{ fact.label }}</dt>
+          <dd>{{ fact.value }}</dd>
+        {% endif %}
+      {% endfor %}
+      {% if lastReviewed %}
+        <dt>Zuletzt geprüft</dt>
+        <dd>{{ lastReviewed }}</dd>
+      {% endif %}
+    </dl>
+  {% endif %}
+
+  {% if content %}
+    {{ content|raw }}
+  {% endif %}
+
+  {% if relatedPages %}
+    <p>
+      Verwandt:
+      {% for related in relatedPages %}{% if not loop.first %} · {% endif %}<a href="{{ related.href }}">{{ related.title }}</a>{% endfor %}
+    </p>
+  {% endif %}
+
+  {% if sources %}
+    <h2>Quellen</h2>
+    <ul>
+      {% for source in sources %}
+        {% if source.value is defined and source.value %}
+          <li><a href="{{ source.value }}" rel="noreferrer noopener" target="_blank">{{ source.label|default(source.value) }}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+</article>
+
+{% if jsonLd %}
+<script type="application/ld+json">
+{{ jsonLd|raw }}
+</script>
+{% endif %}
+
+{% if jsonLdFaq %}
+<script type="application/ld+json">
+{{ jsonLdFaq|raw }}
+</script>
+{% endif %}

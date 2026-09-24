@@ -1,0 +1,12 @@
+parameters:
+    level: 3
+    paths:
+        - src
+    excludePaths:
+        - src/ContaoManager
+    ignoreErrors:
+        - '#Access to an undefined property Contao\\Model#'
+        - '#Access to an undefined property Contao\\Model\\Collection#'
+        - '#Call to an undefined method Contao\\Model(\\Collection)?::#'
+        - '#Access to an undefined property Contao\\DataContainer#'
+        - '#Access to an undefined property Contao\\Template#'

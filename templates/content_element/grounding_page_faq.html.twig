@@ -1,0 +1,10 @@
+<div class="{{ class }} block">
+  {% if items %}
+    <dl>
+      {% for item in items %}
+        <dt>{{ item.label }}</dt>
+        <dd>{{ item.value }}</dd>
+      {% endfor %}
+    </dl>
+  {% endif %}
+</div>

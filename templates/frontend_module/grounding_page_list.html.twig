@@ -1,0 +1,25 @@
+<div class="{{ class }} block" itemscope itemtype="https://schema.org/ItemList">
+  {% if headline %}
+    <{{ hl }}>{{ headline }}</{{ hl }}>
+  {% endif %}
+
+  {% if items is empty %}
+    <p>{{ empty }}</p>
+  {% else %}
+    <ul>
+      {% for item in items %}
+        <li itemprop="itemListElement">
+          <a href="{{ item.href }}" itemprop="url">
+            <span itemprop="name">{{ item.title }}</span>
+          </a>
+          {% if item.entityType %}
+            <span> ({{ item.entityType }})</span>
+          {% endif %}
+          {% if item.definition %}
+            <p>{{ item.definition }}</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
