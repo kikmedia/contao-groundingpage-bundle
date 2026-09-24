@@ -6,9 +6,9 @@ namespace Kikmedia\GroundingPageBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Contao\StringUtil;
-use Contao\Template;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[AsFrontendModule('grounding_page_list', category: 'grounding_page')]
 class GroundingPageListController extends AbstractFrontendModuleController
 {
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $archiveIds = StringUtil::deserialize($model->grounding_page_archives, true);
 

@@ -8,10 +8,10 @@ use Contao\ContentElement as ContaoContentElement;
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Input;
 use Contao\ModuleModel;
 use Contao\StringUtil;
-use Contao\Template;
 use Kikmedia\GroundingPageBundle\Controller\ContentElement\GroundingPageFaqController;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\PageNotFoundHttpException;
 #[AsFrontendModule('grounding_page_reader', category: 'grounding_page')]
 class GroundingPageReaderController extends AbstractFrontendModuleController
 {
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $idOrAlias = Input::get('auto_item');
 
