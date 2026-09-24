@@ -50,7 +50,7 @@ class GroundingPageModel extends Model
         return static::findBy(["$t.published='1'"], null, ['order' => "$t.sorting"]);
     }
 
-    public static function findMultipleByIds(array $ids, bool $publishedOnly = true): Collection|null
+    public static function findPublishedMultipleByIds(array $ids, bool $publishedOnly = true): Collection|null
     {
         if (empty($ids)) {
             return null;

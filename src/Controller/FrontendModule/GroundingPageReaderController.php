@@ -107,7 +107,7 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
             return [];
         }
 
-        $related = GroundingPageModel::findMultipleByIds($ids);
+        $related = GroundingPageModel::findPublishedMultipleByIds($ids);
 
         if (null === $related) {
             return [];

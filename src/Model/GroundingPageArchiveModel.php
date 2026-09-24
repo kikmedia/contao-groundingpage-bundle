@@ -16,19 +16,4 @@ class GroundingPageArchiveModel extends Model
 
         return static::findBy([], null, ['order' => "$t.title"]);
     }
-
-    public static function findMultipleByIds(array $ids): \Contao\Model\Collection|null
-    {
-        if (empty($ids)) {
-            return null;
-        }
-
-        $t = static::$strTable;
-
-        return static::findBy(
-            ["$t.id IN (" . implode(',', array_map('\intval', $ids)) . ')'],
-            null,
-            ['order' => \Database::getInstance()->findInSet("$t.id", $ids)]
-        );
-    }
 }
