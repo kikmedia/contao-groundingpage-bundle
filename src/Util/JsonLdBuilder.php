@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Grounding\PageBundle\Util;
+namespace Kikmedia\GroundingPageBundle\Util;
 
 use Contao\StringUtil;
-use Grounding\PageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 
 final class JsonLdBuilder
 {
@@ -72,5 +72,39 @@ final class JsonLdBuilder
         $data = array_filter($data, static fn ($value) => null !== $value && '' !== $value && [] !== $value);
 
         return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?: '{}';
+    }
+
+    public static function buildFaqPage(array $items, string $canonicalUrl): string|null
+    {
+        $questions = array_values(array_filter(array_map(
+            static function (array $item): array|null {
+                if (empty($item['label']) || !isset($item['value']) || '' === $item['value']) {
+                    return null;
+                }
+
+                return [
+                    '@type' => 'Question',
+                    'name'  => $item['label'],
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text'  => $item['value'],
+                    ],
+                ];
+            },
+            $items
+        )));
+
+        if (empty($questions)) {
+            return null;
+        }
+
+        $data = [
+            '@context'   => 'https://schema.org',
+            '@type'      => 'FAQPage',
+            'url'        => $canonicalUrl,
+            'mainEntity' => $questions,
+        ];
+
+        return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?: null;
     }
 }

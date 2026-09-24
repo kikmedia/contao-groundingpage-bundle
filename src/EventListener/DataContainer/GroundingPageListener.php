@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Grounding\PageBundle\EventListener\DataContainer;
+namespace Kikmedia\GroundingPageBundle\EventListener\DataContainer;
 
 use Contao\Backend;
 use Contao\BackendUser;
@@ -13,7 +13,7 @@ use Contao\Image;
 use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
-use Grounding\PageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class GroundingPageListener extends Backend

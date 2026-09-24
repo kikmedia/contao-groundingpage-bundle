@@ -61,3 +61,9 @@
 <?= $this->jsonLd ?>
 </script>
 <?php endif; ?>
+
+<?php if ($this->jsonLdFaq): ?>
+<script type="application/ld+json">
+<?= $this->jsonLdFaq ?>
+</script>
+<?php endif; ?>

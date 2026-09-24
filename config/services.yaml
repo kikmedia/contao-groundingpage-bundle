@@ -4,11 +4,11 @@ services:
         autoconfigure: true
         public: false
 
-    Grounding\PageBundle\:
+    Kikmedia\GroundingPageBundle\:
         resource: '../src/'
         exclude:
             - '../src/{ContaoManager,Model,GroundingPageBundle.php}'
 
     grounding_page.listener:
-        alias: Grounding\PageBundle\EventListener\DataContainer\GroundingPageListener
+        alias: Kikmedia\GroundingPageBundle\EventListener\DataContainer\GroundingPageListener
         public: true

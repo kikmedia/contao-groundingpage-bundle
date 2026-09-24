@@ -13,9 +13,10 @@ Contao-Extension für **Contao 5.3+ / 6.0+**, mit der sich Referenzseiten nach d
 | Models                         | `GroundingPageArchiveModel`, `GroundingPageModel` |
 | Frontend-Modul „Liste“         | `grounding_page_list`                       |
 | Frontend-Modul „Reader“        | `grounding_page_reader`                     |
-| JSON-LD-Erzeugung              | `Grounding\PageBundle\Util\JsonLdBuilder`  |
+| Content-Element „FAQ“          | `grounding_page_faq`                        |
+| JSON-LD-Erzeugung              | `Kikmedia\GroundingPageBundle\Util\JsonLdBuilder`  |
 
-Es gibt **kein Content-Element** – ausschließlich die beiden Frontend-Module Liste und Reader, wie gewünscht. Jeder Eintrag besitzt weiterhin eine eigene `ctable` auf `tl_content`, über die redaktionell beliebige, in sich abgeschlossene H2-Abschnitte (Standard §5, „Self-contained sections“) gepflegt werden – z. B. „Geschichte von X“, „Produkte von X“.
+Jeder Eintrag besitzt eine eigene `ctable` auf `tl_content`, über die redaktionell beliebige, in sich abgeschlossene H2-Abschnitte (Standard §5, „Self-contained sections“) gepflegt werden – z. B. „Geschichte von X“, „Produkte von X“ – sowie optional das Content-Element **„Grounding-Page FAQ“** für Frage/Antwort-Paare (siehe unten).
 
 ## Backend-Felder je Eintrag (Mapping auf den Standard)
 
@@ -36,7 +37,7 @@ Es gibt **kein Content-Element** – ausschließlich die beiden Frontend-Module 
 ## Installation
 
 ```bash
-composer require grounding/page-bundle
+composer require kikmedia/contao-groundingpage-bundle
 ```
 
 Das Paket ist vom Typ `contao-bundle` und bringt ein `ContaoManager\Plugin` mit, wird also vom Contao Manager automatisch registriert. Ohne Contao Manager manuell in `config/bundles.php` eintragen:
@@ -44,7 +45,7 @@ Das Paket ist vom Typ `contao-bundle` und bringt ein `ContaoManager\Plugin` mit,
 ```php
 return [
     // ...
-    Grounding\PageBundle\GroundingPageBundle::class => ['all' => true],
+    Kikmedia\GroundingPageBundle\GroundingPageBundle::class => ['all' => true],
 ];
 ```
 
@@ -73,6 +74,16 @@ Der Reader erzeugt automatisch einen `<script type="application/ld+json">`-Block
 - `additionalProperty` aus den strukturierten Fakten (`coreFacts`)
 - `citation` aus den Quellen (`sources`)
 
+Enthält der Eintrag mindestens ein Content-Element **„Grounding-Page FAQ“** mit vollständigen Frage/Antwort-Paaren, erzeugt der Reader zusätzlich einen zweiten `<script type="application/ld+json">`-Block vom Typ [`FAQPage`](https://schema.org/FAQPage) (`mainEntity` = `Question`/`acceptedAnswer`-Paare) – ebenfalls eine reine Spiegelung der sichtbaren Frage/Antwort-Liste, keine zusätzlichen Behauptungen.
+
+## FAQ-Content-Element
+
+Das Content-Element **„Grounding-Page FAQ“** (`grounding_page_faq`, Kategorie „Grounding-Page“) steht wie jedes andere Content-Element innerhalb der `ctable` eines Eintrags zur Verfügung. Es besitzt ein Feld `faqItems` (Frage/Antwort-Paare, `optionWizard`) und rendert diese als `<dl>`-Liste. Mehrere FAQ-Elemente innerhalb desselben Eintrags werden im JSON-LD zu einer gemeinsamen `FAQPage` zusammengeführt.
+
+## Twig-Templates
+
+Zusätzlich zu den bestehenden PHP-Templates (`contao/templates/…/*.html5`) liefert das Bundle Twig-Äquivalente unter `templates/frontend_module/` und `templates/content_element/` (`grounding_page_list.html.twig`, `grounding_page_reader.html.twig`, `grounding_page_faq.html.twig`). Contao 5/6 bevorzugt bei vorhandenem Twig-Pendant automatisch die Twig-Variante; ein Projekt kann per `customTpl` bzw. Theme-Override weiterhin gezielt auf die PHP-Variante zurückgreifen. Beide Varianten sind funktional identisch.
+
 ## Eigene Backend-Berechtigungsgruppe
 
 Nicht-Admin-Benutzergruppen (`tl_user_group`) bzw. einzelne Benutzer (`tl_user`) erhalten einen eigenen Bereich **„Grounding-Pages“**:
@@ -80,34 +91,38 @@ Nicht-Admin-Benutzergruppen (`tl_user_group`) bzw. einzelne Benutzer (`tl_user`)
 - **Erlaubte Archive** (`groundingPages`): Checkbox-Auswahl der Archive, die verwaltet werden dürfen.
 - **Berechtigungen** (`groundingPagep`): `create` (neue Archive anlegen) und `delete` (Archive/Einträge löschen).
 
-Die Durchsetzung erfolgt in `Grounding\PageBundle\EventListener\DataContainer\GroundingPageListener` (`checkArchivePermission` / `checkPermission`), analog zum bewährten Contao-Muster (z. B. News-/Kalender-Archive): Admins sind immer uneingeschränkt, alle anderen sehen/bearbeiten nur die freigegebenen Archive; die Berechtigungen aus Benutzer **und** allen zugeordneten Gruppen werden vereinigt.
+Die Durchsetzung erfolgt in `Kikmedia\GroundingPageBundle\EventListener\DataContainer\GroundingPageListener` (`checkArchivePermission` / `checkPermission`), analog zum bewährten Contao-Muster (z. B. News-/Kalender-Archive): Admins sind immer uneingeschränkt, alle anderen sehen/bearbeiten nur die freigegebenen Archive; die Berechtigungen aus Benutzer **und** allen zugeordneten Gruppen werden vereinigt.
 
 ## Sitemap-Integration
 
-`Grounding\PageBundle\EventListener\SitemapListener` hört auf das Contao-Event `contao.sitemap` und fügt jeden veröffentlichten Eintrag mit `addUrlToDefaultUrlSet()` in die generierte `sitemap.xml` ein (URL = Weiterleitungsseite des Archivs + Alias/ID).
-
-**Vereinfachung:** Es wird aktuell nicht nach Website-Root/Domain gefiltert – bei einer Single-Root-Installation ist das korrekt, bei mehreren Root-Seiten/Domains sollte vor dem Produktiveinsatz eine Root-Zuordnung ergänzt werden (Kommentar dazu direkt im Listener).
+`Kikmedia\GroundingPageBundle\EventListener\SitemapListener` hört auf das Contao-Event `contao.sitemap` und fügt jeden veröffentlichten Eintrag mit `addUrlToDefaultUrlSet()` in die generierte `sitemap.xml` ein (URL = Weiterleitungsseite des Archivs + Alias/ID). Der Listener filtert dabei nach Website-Root: ein Eintrag landet nur in der Sitemap des Root, zu dem seine Weiterleitungsseite gehört (`PageModel::rootId` vs. `SitemapEvent::getRootPageId()`) – Multi-Domain-/Multi-Root-Installationen erhalten dadurch pro Root nur die tatsächlich zugehörigen Einträge.
 
 ## Contao-5/6-Standardstruktur (validiert)
 
 Gemäß der offiziellen Contao-Dokumentation ([„Creating an Extension“](https://docs.contao.org/5.x/dev/getting-started/extension/)) folgt das Bundle der empfohlenen Struktur:
 
 ```
-grounding-page-bundle/
+contao-groundingpage-bundle/
 ├── composer.json
 ├── config/
 │   └── services.yaml
 ├── contao/
 │   ├── dca/
 │   ├── languages/{de,en}/
-│   └── templates/frontend_module/
-└── src/
-    ├── ContaoManager/Plugin.php
-    ├── Controller/FrontendModule/
-    ├── EventListener/{DataContainer,}/
-    ├── Model/
+│   └── templates/{frontend_module,content_element}/
+├── templates/
+│   ├── frontend_module/          (Twig-Äquivalente)
+│   └── content_element/          (Twig-Äquivalente)
+├── src/
+│   ├── ContaoManager/Plugin.php
+│   ├── Controller/{FrontendModule,ContentElement}/
+│   ├── EventListener/{DataContainer,}/
+│   ├── Model/
+│   ├── Util/
+│   └── GroundingPageBundle.php
+└── tests/
     ├── Util/
-    └── GroundingPageBundle.php
+    └── Controller/ContentElement/
 ```
 
 **Kein `assets/`-Verzeichnis**: Dieser Ordner wird in einem Contao-Bundle nur für auszuliefernde statische Dateien (JS/CSS/Bilder, per `bin/console assets:install` symlinked) benötigt. Da dieses Bundle bewusst **kein CSS** mitliefert (siehe unten), entfällt er – ein leerer Ordner ohne Inhalt wäre nur Ballast.
@@ -118,27 +133,34 @@ grounding-page-bundle/
 
 ## Kein CSS
 
-Die Templates (`contao/templates/frontend_module/mod_grounding_page_*.html5`) enthalten bewusst **kein CSS** – nur semantisches HTML (`<dl>`, `<article>`, Microdata-Attribute). Das entspricht Standard §10 „Design and brand integration“: Die Seite soll sich optisch in das bestehende Theme einfügen, nicht wie ein technischer Fremdkörper wirken. Styling erfolgt über das Kontao-Theme des Projekts (z. B. via `cssClass`-Feld am Archiv).
+Die Templates (PHP unter `contao/templates/…`, Twig unter `templates/…`) enthalten bewusst **kein CSS** – nur semantisches HTML (`<dl>`, `<article>`, Microdata-Attribute). Das entspricht Standard §10 „Design and brand integration“: Die Seite soll sich optisch in das bestehende Theme einfügen, nicht wie ein technischer Fremdkörper wirken. Styling erfolgt über das Kontao-Theme des Projekts (z. B. via `cssClass`-Feld am Archiv).
 
-## Umfang / bewusst nicht enthalten
+## Qualitätssicherung
 
-Enthalten: Backend-Verwaltung, Frontend-Ausgabe, JSON-LD, Sitemap, Berechtigungsgruppe, DE/EN-Sprachdateien, Alias-Generierung, Versionierung.
+```bash
+composer install
+composer test        # PHPUnit
+composer phpstan      # PHPStan (Level 3)
+composer cs-check     # PHP-CS-Fixer, Dry-Run
+composer cs-fix       # PHP-CS-Fixer, wendet Korrekturen an
+```
+
+Die GitHub-Actions-Pipeline ([.github/workflows/ci.yml](.github/workflows/ci.yml)) führt `composer validate`, PHP-Lint, einen `composer install`-Kompatibilitätstest gegen Contao `5.3.*`/`6.0.*` (jeweils niedrigste/höchste Abhängigkeiten) sowie PHPUnit, PHPStan und PHP-CS-Fixer bei jedem Push/PR aus.
+
+Die Testsuite deckt aktuell die reine Logik ab, die ohne DB/Container testbar ist (`JsonLdBuilder`, `GroundingPageFaqController::extractItems()`, gemockt über `Contao\TestCase\ContaoTestCase`). DCA-Callbacks und die Sitemap-/Berechtigungs-Listener sind wegen ihrer Kopplung an Contao-Statics (`Database`, `PageModel`, Model-Registry) nicht unit-, sondern eher funktional/manuell zu testen.
+
+## Umfang
+
+Enthalten: Backend-Verwaltung, Frontend-Ausgabe, FAQ-Content-Element mit `FAQPage`-JSON-LD, JSON-LD-Spiegelung, Root-gefilterte Sitemap-Integration, Berechtigungsgruppe, DE/EN-Sprachdateien, Alias-Generierung, Versionierung, Twig- und PHP-Templates, PHPUnit/PHPStan/PHP-CS-Fixer inkl. CI.
 
 Bewusst **nicht** enthalten (nächste Ausbaustufen je nach Bedarf):
 - Keine Kommentarfunktion (wie gewünscht).
-- Kein Content-Element (wie gewünscht) – nur Frontend-Module.
-- FAQ-Abschnitt wird aktuell über normale Content-Elemente abgebildet, nicht als eigenes `FAQPage`-JSON-LD (könnte ergänzt werden, sobald FAQ-Content-Elemente strukturell erkennbar sind).
 - Mehrsprachigkeit/`hreflang` (Standard §12) – aktuell ein Archiv pro Sprache über separate Seitenbäume abbildbar, aber nicht automatisiert.
-- Root-Page-Filterung im Sitemap-Listener bei Multi-Domain-Setups (siehe oben).
-- Unit-Tests, GitHub-Actions-CI, PHPStan-Konfiguration.
+- Funktionale/Integrationstests gegen eine echte Contao-Installation (nur Unit-Tests der DB-unabhängigen Logik).
 
 ## Veröffentlichung als Contao-Bundle (Packagist)
 
-`composer.json` ist bereits auf Veröffentlichung vorbereitet (Typ `contao-bundle`, `contao-manager-plugin`, Lizenz `LGPL-3.0-or-later`, `keywords`, `support`-Links). Vor dem `composer publish` bzw. Packagist-Submit:
+`composer.json` ist bereits auf Veröffentlichung vorbereitet (Name `kikmedia/contao-groundingpage-bundle`, Typ `contao-bundle`, `contao-manager-plugin`, Lizenz `LGPL-3.0-or-later`, `keywords`, `support`-Links auf das GitHub-Repository). Vor dem Packagist-Submit:
 
-1. Platzhalter in `composer.json` (`authors`, `homepage`, `support.issues/source`) durch echte Angaben ersetzen.
-2. Vollständigen LGPL-3.0-Lizenztext in `LICENSE.md` einfügen (Hinweis dort enthalten).
-3. Ein öffentliches Git-Repository anlegen, taggen (z. B. `v1.0.0`), auf [packagist.org](https://packagist.org) einreichen.
-4. Optional: GitHub-Actions-Workflow für PHPStan/PHP-CS-Fixer/PHPUnit ergänzen, bevor breiter Rollout erfolgt.
-
-Sag mir, welchen der offenen Punkte du als Nächstes brauchst (z. B. FAQPage-JSON-LD, Mehrsprachigkeit, Root-Filterung, CI-Setup), dann bauen wir gezielt weiter aus.
+1. Vollständigen LGPL-3.0-Lizenztext in `LICENSE.md` einfügen (Hinweis dort enthalten).
+2. Repository taggen (z. B. `v1.0.0`), auf [packagist.org](https://packagist.org) einreichen.

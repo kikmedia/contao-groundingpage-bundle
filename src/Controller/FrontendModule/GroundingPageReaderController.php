@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Grounding\PageBundle\Controller\FrontendModule;
+namespace Kikmedia\GroundingPageBundle\Controller\FrontendModule;
 
 use Contao\ContentElement as ContaoContentElement;
 use Contao\ContentModel;
@@ -12,8 +12,9 @@ use Contao\Input;
 use Contao\ModuleModel;
 use Contao\StringUtil;
 use Contao\Template;
-use Grounding\PageBundle\Model\GroundingPageModel;
-use Grounding\PageBundle\Util\JsonLdBuilder;
+use Kikmedia\GroundingPageBundle\Controller\ContentElement\GroundingPageFaqController;
+use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\PageNotFoundHttpException;
@@ -49,9 +50,12 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $template->relatedPages = $this->getRelatedPages($entry);
 
         $template->lastReviewed = $entry->lastReviewed;
-        $template->content = $this->renderContentElements($entry->id);
+
+        $elements = ContentModel::findPublishedByPidAndTable($entry->id, 'tl_grounding_page');
+        $template->content = $this->renderContentElements($elements);
 
         $template->jsonLd = JsonLdBuilder::build($entry, $request->getUri());
+        $template->jsonLdFaq = JsonLdBuilder::buildFaqPage($this->collectFaqItems($elements), $request->getUri());
 
         if ($entry->addImage && $entry->singleSRC) {
             $file = \Contao\FilesModel::findByUuid($entry->singleSRC);
@@ -65,9 +69,8 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         return $template->getResponse();
     }
 
-    private function renderContentElements(int $entryId): string
+    private function renderContentElements(\Contao\Model\Collection|null $elements): string
     {
-        $elements = ContentModel::findPublishedByPidAndTable($entryId, 'tl_grounding_page');
         $buffer = '';
 
         if (null !== $elements) {
@@ -77,6 +80,23 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         }
 
         return $buffer;
+    }
+
+    private function collectFaqItems(\Contao\Model\Collection|null $elements): array
+    {
+        if (null === $elements) {
+            return [];
+        }
+
+        $items = [];
+
+        foreach ($elements as $element) {
+            if ('grounding_page_faq' === $element->type) {
+                array_push($items, ...GroundingPageFaqController::extractItems($element->faqItems));
+            }
+        }
+
+        return $items;
     }
 
     private function getRelatedPages(GroundingPageModel $entry): array

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Grounding\PageBundle\EventListener;
+namespace Kikmedia\GroundingPageBundle\EventListener;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\SitemapEvent;
 use Contao\PageModel;
-use Grounding\PageBundle\Model\GroundingPageArchiveModel;
-use Grounding\PageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Model\GroundingPageArchiveModel;
+use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener(ContaoCoreEvents::SITEMAP)]
@@ -32,6 +32,12 @@ class SitemapListener
             $page = PageModel::findPublishedById($archive->jumpTo);
 
             if (null === $page) {
+                continue;
+            }
+
+            $page->loadDetails();
+
+            if ((int) $page->rootId !== $event->getRootPageId()) {
                 continue;
             }
 

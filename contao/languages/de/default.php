@@ -6,6 +6,8 @@ $GLOBALS['TL_LANG']['FMD']['grounding_page'] = 'Grounding-Page';
 $GLOBALS['TL_LANG']['FMD']['grounding_page_list'] = ['Grounding-Page Liste', 'Zeigt eine Liste der Einträge eines oder mehrerer Archive an.'];
 $GLOBALS['TL_LANG']['FMD']['grounding_page_reader'] = ['Grounding-Page Reader', 'Zeigt einen einzelnen Eintrag (eine Grounding Page) anhand der URL (auto_item) inkl. JSON-LD an.'];
 
+$GLOBALS['TL_LANG']['CTE']['grounding_page'] = 'Grounding-Page';
+
 $GLOBALS['TL_LANG']['tl_module']['grounding_page_archives'] = ['Archive', 'Wählen Sie die Archive aus, deren Einträge angezeigt werden sollen.'];
 $GLOBALS['TL_LANG']['tl_module']['grounding_page_legend'] = 'Grounding-Page Einstellungen';
 

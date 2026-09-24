@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Grounding\PageBundle\Controller\FrontendModule;
+namespace Kikmedia\GroundingPageBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\ModuleModel;
 use Contao\StringUtil;
 use Contao\Template;
-use Grounding\PageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

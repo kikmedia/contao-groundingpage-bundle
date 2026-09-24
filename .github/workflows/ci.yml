@@ -39,7 +39,7 @@ jobs:
           coverage: none
 
       - name: Lint all PHP files
-        run: find src contao -name '*.php' -print0 | xargs -0 -n1 php -l
+        run: find src contao tests -name '*.php' -print0 | xargs -0 -n1 php -l
 
   composer-install:
     name: Composer install (PHP ${{ matrix.php-version }}, Contao ${{ matrix.contao-version }}, ${{ matrix.dependencies }})
@@ -66,3 +66,50 @@ jobs:
         uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.dependencies }}
+
+  tests:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - run: vendor/bin/phpunit
+
+  static-analysis:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - run: vendor/bin/phpstan analyse --no-progress
+
+  coding-standards:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+    env:
+      PHP_CS_FIXER_IGNORE_ENV: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - run: vendor/bin/php-cs-fixer fix --dry-run --diff

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Grounding\PageBundle\Model;
+namespace Kikmedia\GroundingPageBundle\Model;
 
 use Contao\Model;
 
