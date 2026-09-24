@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-#[AsFrontendModule('grounding_page_reader', category: 'grounding_page')]
+#[AsFrontendModule('grounding_page_reader', category: 'grounding_page', template: 'mod_grounding_page_reader')]
 class GroundingPageReaderController extends AbstractFrontendModuleController
 {
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response

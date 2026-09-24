@@ -14,7 +14,7 @@ use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule('grounding_page_list', category: 'grounding_page')]
+#[AsFrontendModule('grounding_page_list', category: 'grounding_page', template: 'mod_grounding_page_list')]
 class GroundingPageListController extends AbstractFrontendModuleController
 {
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response

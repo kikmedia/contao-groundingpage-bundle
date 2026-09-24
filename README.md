@@ -82,7 +82,9 @@ Das Content-Element **„Grounding-Page FAQ“** (`grounding_page_faq`, Kategori
 
 ## Twig-Templates
 
-Zusätzlich zu den bestehenden PHP-Templates (`contao/templates/…/*.html5`) liefert das Bundle Twig-Äquivalente unter `templates/frontend_module/` und `templates/content_element/` (`grounding_page_list.html.twig`, `grounding_page_reader.html.twig`, `grounding_page_faq.html.twig`). Contao 5/6 bevorzugt bei vorhandenem Twig-Pendant automatisch die Twig-Variante; ein Projekt kann per `customTpl` bzw. Theme-Override weiterhin gezielt auf die PHP-Variante zurückgreifen. Beide Varianten sind funktional identisch.
+Zusätzlich zu den PHP-Templates (`contao/templates/…/*.html5`, die aktiv genutzte Standardvariante) liefert das Bundle funktional identische Twig-Äquivalente unter `templates/frontend_module/` und `templates/content_element/` (`grounding_page_list.html.twig`, `grounding_page_reader.html.twig`, `grounding_page_faq.html.twig`).
+
+Alle drei Fragment-Controller (List-/Reader-Modul, FAQ-Content-Element) legen ihr PHP-Template über den `template`-Parameter des `#[AsFrontendModule]`/`#[AsContentElement]`-Attributs bewusst explizit fest (`mod_grounding_page_list`, `mod_grounding_page_reader`, `ce_grounding_page_faq`). Ohne diese explizite Angabe versucht Contao 5/6 standardmäßig, ein „modernes" Twig-Template unter dem unpräfigierten Namen (z. B. `content_element/grounding_page_faq`) aufzulösen – das schlug in der Praxis mit einem 500er („Tried to list template options for the modern fragment type … but could not find any template") fehl, sobald ein Redakteur das Element im Backend anlegte. Die Twig-Dateien bleiben im Bundle enthalten und sind über `customTpl`/Theme-Override grundsätzlich wählbar, werden aber nicht mehr automatisch bevorzugt.
 
 ## Eigene Backend-Berechtigungsgruppe
 
