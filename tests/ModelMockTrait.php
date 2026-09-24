@@ -10,7 +10,7 @@ trait ModelMockTrait
 {
     private function mockModel(string $class, array $data): Model
     {
-        $model = (new \ReflectionClass($class))->newInstanceWithoutConstructor();
+        $model = new \ReflectionClass($class)->newInstanceWithoutConstructor();
 
         $property = new \ReflectionProperty(Model::class, 'arrData');
         $property->setAccessible(true);
