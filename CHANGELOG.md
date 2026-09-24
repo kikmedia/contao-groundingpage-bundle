@@ -18,6 +18,7 @@ Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1
 
 ### Fixed
 - Kritisch: Alle drei Fragment-Controller (`grounding_page_list`, `grounding_page_reader`, `grounding_page_faq`) legten kein explizites `template` im `#[AsFrontendModule]`/`#[AsContentElement]`-Attribut fest. Contao 5/6 versuchte dadurch, ein „modernes" Twig-Template unter dem unpräfigierten Namen aufzulösen, fand keins und warf beim Anlegen im Backend einen 500er („Tried to list template options for the modern fragment type … but could not find any template"). Jetzt wird das PHP-Template über `template:` explizit angegeben; die Twig-Templates bleiben als Opt-in via `customTpl` erhalten.
+- Kritisch: `GroundingPageModel`/`GroundingPageArchiveModel` waren nie in `$GLOBALS['TL_MODELS']` registriert. Jeder Aufruf, der intern eine Instanz für `tl_grounding_page`/`tl_grounding_page_archive` erzeugen musste (u. a. das Liste-Modul), endete mit `RuntimeException: There is no class for table "tl_grounding_page" registered in $GLOBALS['TL_MODELS']`. Beide Klassen sind jetzt in `contao/config/config.php` registriert (Muster verifiziert gegen `contao/faq-bundle`).
 
 ### Changed
 - Paketname von `grounding/page-bundle` auf `kikmedia/contao-groundingpage-bundle` geändert, PHP-Namespace von `Grounding\PageBundle\` auf `Kikmedia\GroundingPageBundle\`, `composer.json`-Metadaten (`homepage`, `support`) auf das tatsächliche GitHub-Repository umgestellt.
