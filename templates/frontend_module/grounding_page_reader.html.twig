@@ -27,7 +27,7 @@
       {% endfor %}
       {% if lastReviewed %}
         <dt>Zuletzt geprüft</dt>
-        <dd>{{ lastReviewed }}</dd>
+        <dd><time datetime="{{ lastReviewedIso }}">{{ lastReviewed }}</time></dd>
       {% endif %}
     </dl>
   {% endif %}

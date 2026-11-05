@@ -23,12 +23,10 @@ final class JsonLdBuilder
             'url'         => $canonicalUrl,
         ];
 
-        if ($entry->lastReviewed) {
-            $timestamp = strtotime((string) $entry->lastReviewed);
+        $reviewed = ReviewDate::iso($entry->lastReviewed);
 
-            if (false !== $timestamp) {
-                $data['dateModified'] = date('Y-m-d', $timestamp);
-            }
+        if (null !== $reviewed) {
+            $data['dateModified'] = $reviewed;
         }
 
         $facts = array_filter((array) StringUtil::deserialize($entry->coreFacts, true));

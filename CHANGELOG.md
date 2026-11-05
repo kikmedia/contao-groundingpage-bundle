@@ -4,6 +4,9 @@ Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1
 
 ## [Unreleased]
 
+### Fixed
+- „Zuletzt geprüft“: Contao speichert ein Datumsfeld (`rgxp: date`) als Unix-Timestamp. Der Reader gab ihn roh aus („1793660400“), und `dateModified` fehlte im JSON-LD, weil `strtotime()` die Ziffernfolge nicht als Datum liest. Neu: `Util\ReviewDate` versteht Timestamps und Datumsstrings. Der Reader zeigt das Datum im Datumsformat der Website als `<time datetime="Y-m-d">`, das JSON-LD enthält `dateModified` (Tag in der Zeitzone der Website).
+
 ### Added
 - Root-Page-Filter im `SitemapListener`: Einträge erscheinen nur noch in der Sitemap des Website-Root, zu dem ihre Weiterleitungsseite gehört (`PageModel::rootId` vs. `SitemapEvent::getRootPageIds()`).
 - Content-Element „Grounding-Page FAQ“ (`grounding_page_faq`): Frage/Antwort-Paare (`groundingPageItems`, `optionWizard`), gerendert als `<dl>`-Liste.
