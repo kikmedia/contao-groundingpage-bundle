@@ -27,7 +27,7 @@
       <?php endforeach; ?>
       <?php if ($this->lastReviewed): ?>
         <dt>Zuletzt geprüft</dt>
-        <dd><?= $this->lastReviewed ?></dd>
+        <dd><time datetime="<?= $this->lastReviewedIso ?>"><?= $this->lastReviewed ?></time></dd>
       <?php endif; ?>
     </dl>
   <?php endif; ?>

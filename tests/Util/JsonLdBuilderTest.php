@@ -107,4 +107,28 @@ class JsonLdBuilderTest extends TestCase
         self::assertSame('A Contao bundle.', $data['mainEntity'][0]['acceptedAnswer']['text']);
         self::assertSame('Answer', $data['mainEntity'][0]['acceptedAnswer']['@type']);
     }
+
+    public function testDateModifiedFromTheTimestampThatContaoStores(): void
+    {
+        $zone = date_default_timezone_get();
+        date_default_timezone_set('Europe/Berlin');
+
+        try {
+            $entry = $this->mockModel(GroundingPageModel::class, [
+                'entityType' => 'Organization',
+                'entityTypeCustom' => '',
+                'title' => 'VeloNova',
+                'definition' => '',
+                'lastReviewed' => '1793660400',
+                'coreFacts' => serialize([]),
+                'sources' => serialize([]),
+            ]);
+
+            $data = json_decode(JsonLdBuilder::build($entry, 'https://example.com/velonova'), true);
+
+            self::assertSame('2026-11-03', $data['dateModified']);
+        } finally {
+            date_default_timezone_set($zone);
+        }
+    }
 }

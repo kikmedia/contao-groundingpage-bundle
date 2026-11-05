@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Kikmedia\GroundingPageBundle\Controller\FrontendModule;
 
+use Contao\Config;
 use Contao\ContentModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Twig\FragmentTemplate;
+use Contao\Date;
 use Contao\Input;
 use Contao\ModuleModel;
 use Contao\StringUtil;
 use Kikmedia\GroundingPageBundle\Controller\ContentElement\GroundingPageFaqController;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
+use Kikmedia\GroundingPageBundle\Util\ReviewDate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -49,7 +52,9 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $template->sources = array_filter((array) StringUtil::deserialize($entry->sources, true));
         $template->relatedPages = $this->getRelatedPages($entry);
 
-        $template->lastReviewed = $entry->lastReviewed;
+        $reviewed = ReviewDate::timestamp($entry->lastReviewed);
+        $template->lastReviewed = null === $reviewed ? '' : Date::parse(Config::get('dateFormat'), $reviewed);
+        $template->lastReviewedIso = ReviewDate::iso($entry->lastReviewed) ?? '';
 
         $elements = ContentModel::findPublishedByPidAndTable($entry->id, 'tl_grounding_page');
         $template->content = $this->renderContentElements($elements);
