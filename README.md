@@ -6,7 +6,7 @@ Contao-Erweiterung, mit der sich Referenzseiten nach dem offenen **[Grounding Pa
 
 Eine *Grounding Page* ist eine faktenbasierte Referenzseite zu genau einer Entität (Unternehmen, Produkt, Person, Begriff …), die für Menschen lesbar und für KI-Systeme maschinenlesbar aufgebaut ist. Details: [groundingpage.com/spec](https://groundingpage.com/spec/de/).
 
-Der Funktionsumfang orientiert sich an Version 1.6 des Standards. Die Neuerungen aus 1.7 und 2.0 sind noch nicht umgesetzt, der Fahrplan steht in [Issue #5](https://github.com/kikmedia/contao-groundingpage-bundle/issues/5).
+Der Funktionsumfang orientiert sich an [Version 1.7](https://groundingpage.com/spec/v1.7/de/) des Standards, einschließlich der dokumentierten menschlichen Faktenprüfung. Die Neuerungen aus 2.0 sind noch nicht umgesetzt, der Fahrplan steht in [Issue #5](https://github.com/kikmedia/contao-groundingpage-bundle/issues/5).
 
 ## Funktionen
 
@@ -16,7 +16,9 @@ Der Funktionsumfang orientiert sich an Version 1.6 des Standards. Die Neuerungen
 - Inhaltselement **Grounding-Page FAQ** für Frage/Antwort-Paare
 - JSON-LD für die Entität und, falls FAQ-Elemente vorhanden sind, zusätzlich als `FAQPage`
 - Aufnahme in die `sitemap.xml` der passenden Website-Root
-- Berechtigungen je Archiv sowie für Anlegen und Löschen
+- Prüfprotokoll je Eintrag mit sichtbarem Prüfhinweis, `reviewedBy` und `lastReviewed`
+- Prüfergebnisse im Backend und optionale Konformitätsangabe zu Version 1.7
+- Berechtigungen je Archiv sowie für Anlegen, Löschen und das Dokumentieren von Prüfungen
 - Deutsche und englische Sprachdateien für Backend und Frontend
 
 ## Voraussetzungen
@@ -72,7 +74,8 @@ Kikmedia\GroundingPageBundle\GroundingPageBundle::class => ['all' => true],
 | Schema.org-Typ | Entitätstyp, optional eigener Typ |
 | Definition, Einordnung, Abgrenzung | gleichnamige Felder |
 | Strukturierte Fakten | Strukturierte Fakten |
-| Quellen und Aktualität | Quellen, Zuletzt geprüft am |
+| Quellen | Quellen |
+| Aktualität und Faktenprüfung | Aktion **Prüfungen** am Eintrag |
 | Verwandte Entitäten | Verwandte Entitäten |
 | Eigenständige Abschnitte | Inhaltselemente |
 
@@ -85,6 +88,56 @@ Fakten, Quellen und FAQ nutzen Contaos Optionen-Assistenten mit den Spalten **We
 | Strukturierte Fakten | `2014` | `Gegründet` |
 | Quellen | `https://example.com/bericht` | `Jahresbericht` |
 | FAQ | Antwort | Frage |
+
+## Faktenprüfung
+
+Standard 1.7 verlangt, dass ein Mensch die Fakten vor der Veröffentlichung und nach jeder wesentlichen Änderung prüft. Das Bundle dokumentiert diese Prüfung. Es prüft die Fakten nicht selbst.
+
+### Ablauf
+
+1. Eintrag und Inhaltselemente fertigstellen.
+2. In der Eintragsliste die Aktion **Prüfungen** wählen.
+3. Datum, Prüfer (Person oder Organisation, mit Name) und Ergebnis angeben. Für „freigegeben“ müssen alle fünf Prüfpunkte bestätigt sein: faktische Richtigkeit, Aktualität inklusive Stand-Daten, Nachprüfbarkeit und Quellenqualität, eindeutige Entität und Abgrenzung sowie Übereinstimmung mit strukturierten Daten, Seitentitel, Meta-Beschreibung und Alt-Texten.
+4. Speichern. Bei „nicht freigegeben“ ist eine interne Notiz Pflicht.
+
+Prüfer und Datum erscheinen öffentlich. Der Backend-Benutzer, der die Prüfung dokumentiert hat, und die Notiz bleiben intern. Wer eine Prüfung dokumentiert, die eine andere Person durchgeführt hat, trägt deren Namen als Prüfer ein.
+
+Je Archiv lässt sich ein Standard-Prüfer eintragen, der die erste Prüfung eines Eintrags vorbelegt.
+
+Gespeicherte Prüfungen lassen sich nicht bearbeiten oder kopieren. Löschen dürfen nur Administratoren. Danach gilt wieder die vorherige Prüfung. Beim Kopieren eines Eintrags wird das Protokoll nicht mitkopiert, beim Löschen wird es mitgelöscht.
+
+### Prüfhinweis
+
+Solange die zuletzt gespeicherte Prüfung freigegeben ist und der Inhalt seither unverändert blieb, zeigt der Reader:
+
+> Fakten geprüft von Erika Muster · Zuletzt von einem Menschen geprüft: 2026-11-27
+
+Dieselben Werte stehen als `reviewedBy` und `lastReviewed` am `WebPage`-Knoten. Sonst erscheint weder Hinweis noch Auszeichnung.
+
+Eine Prüfung gilt als veraltet, sobald sich Entitätsname, Typ, Definition, Einordnung, Abgrenzung, Kernfakten, Quellen, verwandte Einträge, das Bild oder ein nicht verstecktes Inhaltselement ändern. Alias, Autor, Veröffentlichung, Bildgröße und Layout-Einstellungen zählen nicht. Wird eine Änderung zurückgenommen, gilt die Prüfung wieder.
+
+War die Änderung unwesentlich (Tippfehler, Layout, Umformulierung ohne Faktenänderung, Versionshinweis), lässt sie sich im Protokoll mit einer Notiz **als unwesentlich bestätigen**. Prüfer und Datum der ursprünglichen Prüfung bleiben öffentlich.
+
+**Nicht erkannt** werden Änderungen an Dateimetadaten wie Alt-Texten, an eingebundenen Modulen oder referenzierten Elementen, an Titeln verwandter Einträge und an Templates. In diesen Fällen muss selbst neu geprüft werden.
+
+Bringt ein Update von Contao, diesem Bundle oder einer anderen Erweiterung neue Spalten mit Vorgabewert für Inhaltselemente, werden Prüfungen veraltet. Nach Updates lohnt ein Blick in die Eintragsliste.
+
+### Prüfergebnisse und Konformitätsangabe
+
+Die Eintragsliste zeigt je Eintrag den Prüfzustand, das Eintragsformular die Ergebnisse zum gespeicherten Stand:
+
+| Bezug | Pflicht |
+|---|---|
+| P-2 | Definition ausgefüllt |
+| P-3 | jede H2-Überschrift in den Inhaltselementen nennt den Entitätsnamen |
+| P-4 | mindestens ein Kernfakt mit Bezeichnung und Wert |
+| P-5 | spezifischer Typ, weder `Thing` noch `WebPage` |
+| P-7 | Eintrag veröffentlicht, Weiterleitungsseite veröffentlicht, ohne Zugriffsschutz und nicht auf `noindex` |
+| P-8 | Prüfung freigegeben und aktuell |
+
+Hinweise, die nichts verhindern: fehlender Alt-Text (P-6), fehlende Abgrenzung (P-11), fehlende oder nicht per `http(s)` erreichbare Quellen (P-12), Archiv ohne Weiterleitungsseite oder in keinem Listen-Modul (P-15), Prüfung älter als 6 oder 12 Monate (P-16).
+
+Mit dem Häkchen **Konformität mit Version 1.7 angeben** zeigt der Reader unter dem Prüfhinweis „Grounding Page Standard 1.7“ mit Link zum Standard, solange die Prüfung aktuell ist und alle Pflichtprüfungen bestehen. Die Prüfungen decken ab, was sich maschinell feststellen lässt. Ob eine Seite den Standard erfüllt, verantwortet der Betreiber.
 
 ## JSON-LD
 
@@ -101,10 +154,9 @@ Der Reader spiegelt nur sichtbare Inhalte und trennt zwischen der Entität und d
 
 - `dateModified`: Datum der letzten Änderung am Eintrag oder an seinen Inhaltselementen
 - `citation` aus den Quellen
+- `lastReviewed` und `reviewedBy`, nur bei aktueller Prüfung
 
 Enthält der Eintrag FAQ-Elemente, folgt ein weiterer Block vom Typ [`FAQPage`](https://schema.org/FAQPage).
-
-„Zuletzt geprüft am“ erscheint sichtbar auf der Seite, wird aber nicht als `lastReviewed` ausgezeichnet.
 
 ## Sprache
 
@@ -117,9 +169,11 @@ Eigene Texte oder weitere Sprachen lassen sich im Projekt über die Schlüssel `
 Administratoren dürfen alles. Für andere Benutzer wird in der Benutzergruppe freigegeben:
 
 1. unter den Backend-Modulen **Grounding-Pages**
-2. unter **Grounding-Pages** die erlaubten Archive, bei Bedarf „Neue Archive anlegen“ und „Archive/Einträge löschen“
+2. unter **Grounding-Pages** die erlaubten Archive, bei Bedarf „Neue Archive anlegen“, „Archive/Einträge löschen“ und „Prüfung dokumentieren“
 3. die erlaubten Felder der Archive und Einträge sowie die erlaubten Inhaltselemente (ohne freigegebene Felder lässt Contao nichts anlegen)
 4. ab Contao 5.7: die erlaubten Operationen (anlegen, bearbeiten, löschen) für Grounding-Page-Archive, -Einträge und Inhaltselemente
+
+Das Protokoll lesen darf, wer Zugriff auf das Archiv hat. Zum Dokumentieren genügt zusätzlich „Prüfung dokumentieren“, die Punkte 3 und 4 sind dafür nicht nötig.
 
 ## Templates anpassen
 
@@ -135,6 +189,8 @@ Zum Anpassen eine gleichnamige Datei im Projekt anlegen, zum Beispiel `templates
 {% extends "@Contao/frontend_module/grounding_page_reader.html.twig" %}
 ```
 
+Der Reader übergibt den Prüfhinweis als `review` (`reviewer`, `date`, `dateIso`, sonst `null`) und den Link der Konformitätsangabe als `conformityUrl`.
+
 Das Bundle liefert bewusst kein CSS. Jedes Archiv kann eine CSS-Klasse erhalten, die der Reader am umschließenden `<article>` ausgibt.
 
 ## Bekannte Einschränkungen
@@ -146,6 +202,13 @@ Das Bundle liefert bewusst kein CSS. Jedes Archiv kann eine CSS-Klasse erhalten,
 - Antworten im FAQ-Element sind einzeiliger Text ohne Formatierung.
 - Sprachverknüpfungen (`hreflang`) werden nicht erzeugt.
 - Das Upgrade einer Installation mit Inhalten von Contao 5 auf 6 ist noch nicht getestet. Contao verlangt dafür den Weg über 5.7.
+
+## Umstieg von 0.1.0
+
+- Nach dem Update `contao:migrate` ausführen.
+- Das Feld „Zuletzt geprüft am“ entfällt in Formular und Frontend. Die Daten bleiben in der Datenbank, zählen aber nicht als Prüfung. Jeder Eintrag zeigt erst nach einer dokumentierten Prüfung wieder einen Prüfhinweis.
+- Eigene Reader-Templates anpassen: `lastReviewed` und `lastReviewedIso` gibt es nicht mehr.
+- Eigene Rechtegruppen um „Prüfung dokumentieren“ ergänzen. Administratoren brauchen nichts zu ändern.
 
 ## Umstieg von einer Testversion
 

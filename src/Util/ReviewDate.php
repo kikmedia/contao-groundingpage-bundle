@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace Kikmedia\GroundingPageBundle\Util;
 
-/**
- * The review date ("Zuletzt geprüft"). Contao stores a date field (rgxp "date") as a Unix timestamp in a string column;
- * older data and fixtures may hold a date string. Both are understood.
- */
 final class ReviewDate
 {
-    /** A run of at least nine digits is a timestamp (an eight digit "20260115" is a date). */
     private const TIMESTAMP = '/^\d{9,}$/';
 
     public static function timestamp(mixed $value): ?int
@@ -34,7 +29,6 @@ final class ReviewDate
         return false === $timestamp ? null : $timestamp;
     }
 
-    /** The day as Y-m-d in the time zone of the site (for <time datetime> and schema.org dateModified). */
     public static function iso(mixed $value): ?string
     {
         $timestamp = self::timestamp($value);

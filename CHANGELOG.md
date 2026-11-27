@@ -2,6 +2,27 @@
 
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die Versionsnummern folgen [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.2.0] – unveröffentlicht
+
+### Hinzugefügt
+
+- Prüfprotokoll je Eintrag für die menschliche Faktenprüfung nach Standard 1.7, mit dem Recht „Prüfung dokumentieren“.
+- Sichtbarer Prüfhinweis im Reader und `reviewedBy` sowie `lastReviewed` am `WebPage`-Knoten, solange die Prüfung freigegeben und der Inhalt unverändert ist.
+- Bestätigung unwesentlicher Änderungen.
+- Prüfergebnisse im Eintragsformular und Prüfzustand in der Eintragsliste.
+- Optionale Konformitätsangabe „Grounding Page Standard 1.7“ je Eintrag.
+- Standard-Prüfer je Archiv.
+
+### Geändert
+
+- „Zuletzt geprüft am“ verschwindet aus Formular und Frontend. Die gespeicherten Daten bleiben erhalten, gelten aber nicht als Prüfung.
+- Die Template-Variablen `lastReviewed` und `lastReviewedIso` und der Sprachschlüssel `MSC.grounding_page_reviewed` entfallen. Eigene Reader-Templates müssen angepasst werden.
+- `contao:migrate` ist erforderlich.
+
+### Behoben
+
+- Gecachte Reader-Seiten werden verworfen, wenn sich der Eintrag oder seine Prüfung ändert.
+
 ## [0.1.0-alpha.2] – 2026-11-27
 
 ### Geändert

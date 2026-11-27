@@ -44,7 +44,6 @@ class ReviewDateTest extends TestCase
 
     public function testIsoDateIsTheDayInTheTimezoneOfTheSite(): void
     {
-        // 03.11.2026 00:00 in Berlin is 02.11.2026 23:00 UTC: the day must not slip
         self::assertSame('2026-11-03', ReviewDate::iso('1793660400'));
         self::assertNull(ReviewDate::iso(''));
     }
