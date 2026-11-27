@@ -2,7 +2,7 @@
 
 Contao-Erweiterung, mit der sich Referenzseiten nach dem offenen **[Grounding Page Standard](https://groundingpage.com/spec/)** im Backend pflegen und im Frontend ausgeben lassen – mit JSON-LD, FAQ-Element, Sitemap-Integration und eigenen Backend-Berechtigungen.
 
-> **Status: Alpha.** Datenbankfelder, Templates und PHP-Schnittstellen können sich bis zur Version 1.0 noch ändern. Bitte vor dem Einsatz auf einem Testsystem ausprobieren und vor Updates die Datenbank sichern.
+> **Status: frühe Version.** Datenbankfelder, Templates und PHP-Schnittstellen können sich bis zur Version 1.0 noch ändern. Bitte vor dem Einsatz auf einem Testsystem ausprobieren und vor Updates die Datenbank sichern.
 
 Eine *Grounding Page* ist eine faktenbasierte Referenzseite zu genau einer Entität (Unternehmen, Produkt, Person, Begriff …), die für Menschen lesbar und für KI-Systeme maschinenlesbar aufgebaut ist. Details: [groundingpage.com/spec](https://groundingpage.com/spec/de/).
 
@@ -38,10 +38,10 @@ Getestet sind:
 
 ## Installation
 
-Das Paket liegt auf [Packagist](https://packagist.org/packages/kikmedia/contao-groundingpage-bundle). Solange es nur Vorabversionen gibt, muss die Stabilität mit angegeben werden. Im Hauptverzeichnis der Contao-Installation:
+Das Paket liegt auf [Packagist](https://packagist.org/packages/kikmedia/contao-groundingpage-bundle). Im Hauptverzeichnis der Contao-Installation:
 
 ```bash
-composer require "kikmedia/contao-groundingpage-bundle:^0.1@alpha"
+composer require "kikmedia/contao-groundingpage-bundle:^0.2"
 ```
 
 ```bash
@@ -114,13 +114,13 @@ Solange die zuletzt gespeicherte Prüfung freigegeben ist und der Inhalt seither
 
 Dieselben Werte stehen als `reviewedBy` und `lastReviewed` am `WebPage`-Knoten. Sonst erscheint weder Hinweis noch Auszeichnung.
 
-Eine Prüfung gilt als veraltet, sobald sich Entitätsname, Typ, Definition, Einordnung, Abgrenzung, Kernfakten, Quellen, verwandte Einträge, das Bild oder ein nicht verstecktes Inhaltselement ändern. Alias, Autor, Veröffentlichung, Bildgröße und Layout-Einstellungen zählen nicht. Wird eine Änderung zurückgenommen, gilt die Prüfung wieder.
+Eine Prüfung gilt als veraltet, sobald sich Entitätsname, Typ, Definition, Einordnung, Abgrenzung, Kernfakten, Quellen, verwandte Einträge, die Bildauswahl oder ein nicht verstecktes Inhaltselement ändern. Alias, Autor, Veröffentlichung, Bildgröße und Layout-Einstellungen zählen nicht. Wird eine Änderung zurückgenommen, gilt die Prüfung wieder.
 
 War die Änderung unwesentlich (Tippfehler, Layout, Umformulierung ohne Faktenänderung, Versionshinweis), lässt sie sich im Protokoll mit einer Notiz **als unwesentlich bestätigen**. Prüfer und Datum der ursprünglichen Prüfung bleiben öffentlich.
 
 Zeigt die Frontend-Vorschau auch versteckte Elemente, bleibt der Prüfhinweis dort aus, sobald der Eintrag solche Elemente enthält.
 
-**Nicht erkannt** werden Änderungen an Dateimetadaten wie Alt-Texten, an eingebundenen Modulen oder referenzierten Elementen, an Titeln verwandter Einträge und an Templates. In diesen Fällen muss selbst neu geprüft werden.
+**Nicht erkannt** werden Änderungen an Dateimetadaten wie Alt-Texten, an Dateien, die unter gleichem Namen ersetzt werden, an eingebundenen Modulen und referenzierten Elementen, an den von Insert-Tags eingesetzten Inhalten, an Titeln verwandter Einträge und an Templates. In diesen Fällen muss selbst neu geprüft werden.
 
 Bringt ein Update von Contao, diesem Bundle oder einer anderen Erweiterung neue Spalten mit Vorgabewert für Inhaltselemente, werden Prüfungen veraltet. Nach Updates lohnt ein Blick in die Eintragsliste.
 
@@ -207,6 +207,7 @@ Das Bundle liefert bewusst kein CSS. Jedes Archiv kann eine CSS-Klasse erhalten,
 
 ## Umstieg von 0.1.0
 
+- Eine Versionsangabe wie `^0.1@alpha` in der `composer.json` auf `^0.2` ändern, zum Beispiel mit dem Befehl unter [Installation](#installation).
 - Nach dem Update `contao:migrate` ausführen.
 - Das Feld „Zuletzt geprüft am“ entfällt in Formular und Frontend. Die Daten bleiben in der Datenbank, zählen aber nicht als Prüfung. Jeder Eintrag zeigt erst nach einer dokumentierten Prüfung wieder einen Prüfhinweis.
 - Eigene Reader-Templates anpassen: `lastReviewed` und `lastReviewedIso` gibt es nicht mehr.

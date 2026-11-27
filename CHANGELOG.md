@@ -2,7 +2,7 @@
 
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die Versionsnummern folgen [Semantic Versioning](https://semver.org/lang/de/).
 
-## [0.2.0] – unveröffentlicht
+## [0.2.0] – 2026-11-27
 
 ### Hinzugefügt
 
