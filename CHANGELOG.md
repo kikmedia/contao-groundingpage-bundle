@@ -18,6 +18,7 @@ Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1
 
 ### Behoben
 
+- Im Backend stand in der Überschrift `MOD.grounding_page.0` statt „Grounding-Pages“.
 - Das Prüfdatum fehlte, wenn ein Eintrag keine Fakten hatte.
 - Beim Kopieren eines Eintrags wurde das Prüfdatum mitkopiert.
 

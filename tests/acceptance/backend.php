@@ -13,6 +13,10 @@ function open(Browser $browser, string $label, string|null $url, string $expecte
     $page = $browser->get($url);
     check($label, 200 === $page->status && $page->contains($expected), "HTTP $page->status, expected '$expected'");
 
+    $text = strip_tags(preg_replace('~<(script|style)\b.*?</\1>~s', '', $page->body));
+    preg_match_all('~\b(?:MOD|CTE|FMD|MSC|tl_[a-z_]+)\.[a-z_A-Z]+(?:\.[0-9])?\b~', $text, $keys);
+    check("$label: no untranslated language key", [] === $keys[0], implode(', ', array_unique($keys[0])));
+
     return $page->body;
 }
 

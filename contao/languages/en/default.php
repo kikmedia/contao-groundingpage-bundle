@@ -8,8 +8,6 @@ $GLOBALS['TL_LANG']['FMD']['grounding_page_reader'] = ['Grounding Page reader', 
 
 $GLOBALS['TL_LANG']['CTE']['grounding_page'] = 'Grounding Page';
 
-$GLOBALS['TL_LANG']['MOD']['grounding_page'] = 'Grounding Pages';
-
 $GLOBALS['TL_LANG']['tl_module']['grounding_page_archives'] = ['Archives', 'Select the archives whose entries should be shown.'];
 $GLOBALS['TL_LANG']['tl_module']['grounding_page_legend'] = 'Grounding Page settings';
 
