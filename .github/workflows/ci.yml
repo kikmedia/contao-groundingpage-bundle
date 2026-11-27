@@ -125,3 +125,45 @@ jobs:
       - uses: ramsey/composer-install@v3
 
       - run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+  acceptance:
+    name: Acceptance (PHP ${{ matrix.php-version }}, Contao ${{ matrix.contao-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.3', '8.4']
+        contao-version: ['5.3.*', '5.7.*', '6.0.*']
+        exclude:
+          - php-version: '8.3'
+            contao-version: '6.0.*'
+    services:
+      database:
+        image: mariadb:10.11
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+          MARIADB_DATABASE: contao
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: gd, intl, pdo_mysql
+          ini-values: memory_limit=-1
+          coverage: none
+          tools: composer:v2
+
+      - name: Run the acceptance suite against a real Contao installation
+        run: tests/acceptance/run.sh "${{ matrix.contao-version }}"
+        env:
+          DATABASE_URL: mysql://root@127.0.0.1:3306/contao?serverVersion=10.11.0-MariaDB
+
