@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kikmedia\GroundingPageBundle\Tests\Util;
 
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Review\PublicReview;
 use Kikmedia\GroundingPageBundle\Tests\ModelMockTrait;
 use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
 use PHPUnit\Framework\TestCase;
@@ -71,6 +72,14 @@ class JsonLdBuilderTest extends TestCase
     public function testDescribesNothingForAPageWithoutSourcesAndDate(): void
     {
         self::assertSame([], JsonLdBuilder::pageProperties($this->entry(['sources' => null]), null));
+    }
+
+    public function testDescribesADocumentedReview(): void
+    {
+        self::assertSame(
+            ['lastReviewed' => '2026-11-20', 'reviewedBy' => ['@type' => 'Organization', 'name' => 'Müller & Söhne']],
+            JsonLdBuilder::reviewProperties(new PublicReview('2026-11-20', 'Organization', 'Müller & Söhne'))
+        );
     }
 
     public function testUsesCustomEntityType(): void

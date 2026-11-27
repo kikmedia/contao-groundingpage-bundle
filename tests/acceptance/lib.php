@@ -224,7 +224,7 @@ function submit(Browser $browser, string|null $url, array $changes, string $form
     }
 
     $page = xpath($browser->get($url)->body);
-    $marker = '' === $form ? '[starts-with(@value, "tl_") and @value!="tl_filters"]' : "[@value=\"$form\"]";
+    $marker = '' === $form ? '[starts-with(@value, "tl_") and @value!="tl_filters" and @value!="tl_version"]' : "[@value=\"$form\"]";
     $form = $page->query("//form[.//input[@name=\"FORM_SUBMIT\"]$marker]")->item(0);
 
     if (null === $form) {

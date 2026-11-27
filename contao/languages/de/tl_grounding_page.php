@@ -33,8 +33,6 @@ $GLOBALS['TL_LANG']['tl_grounding_page']['addImage'] = ['Bild hinzufügen', 'Opt
 $GLOBALS['TL_LANG']['tl_grounding_page']['singleSRC'] = ['Bild', 'Wählen Sie eine Datei aus der Dateiübersicht.'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['size'] = ['Bildgröße', 'Hier können Sie die Bildgröße festlegen.'];
 
-$GLOBALS['TL_LANG']['tl_grounding_page']['lastReviewed'] = ['Zuletzt geprüft am', 'Nur ändern, wenn tatsächlich eine redaktionelle Prüfung stattgefunden hat – nicht automatisch bei jedem Speichern. Empfehlung: alle 3–6 Monate.'];
-
 $GLOBALS['TL_LANG']['tl_grounding_page']['published'] = ['Veröffentlichen', 'Diesen Eintrag veröffentlichen.'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['start'] = ['Anzeigen ab', 'Der Eintrag wird erst ab diesem Zeitpunkt angezeigt.'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['stop'] = ['Anzeigen bis', 'Der Eintrag wird nur bis zu diesem Zeitpunkt angezeigt.'];
@@ -46,7 +44,6 @@ $GLOBALS['TL_LANG']['tl_grounding_page']['facts_legend'] = 'Strukturierte Fakten
 $GLOBALS['TL_LANG']['tl_grounding_page']['sources_legend'] = 'Quellen';
 $GLOBALS['TL_LANG']['tl_grounding_page']['related_legend'] = 'Verwandte Entitäten';
 $GLOBALS['TL_LANG']['tl_grounding_page']['media_legend'] = 'Medien (optional)';
-$GLOBALS['TL_LANG']['tl_grounding_page']['review_legend'] = 'Aktualität';
 $GLOBALS['TL_LANG']['tl_grounding_page']['publish_legend'] = 'Veröffentlichung';
 
 $GLOBALS['TL_LANG']['tl_grounding_page']['edit'] = ['Eintrag bearbeiten', 'Eintrag ID %s bearbeiten'];

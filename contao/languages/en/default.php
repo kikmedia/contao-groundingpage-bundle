@@ -28,5 +28,5 @@ $GLOBALS['TL_LANG']['MSC']['grounding_page_empty'] = 'There are no entries yet.'
 $GLOBALS['TL_LANG']['MSC']['grounding_page_facts'] = '%s: Key facts';
 $GLOBALS['TL_LANG']['MSC']['grounding_page_sources'] = 'Sources for %s';
 $GLOBALS['TL_LANG']['MSC']['grounding_page_related'] = 'Related:';
-$GLOBALS['TL_LANG']['MSC']['grounding_page_reviewed'] = 'Last reviewed';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_review_notice'] = 'Facts checked by %s · Last reviewed by a human: %s';
 $GLOBALS['TL_LANG']['MSC']['grounding_page_modified'] = 'Last updated';

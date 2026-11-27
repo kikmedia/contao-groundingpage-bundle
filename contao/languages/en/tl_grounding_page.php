@@ -33,8 +33,6 @@ $GLOBALS['TL_LANG']['tl_grounding_page']['addImage'] = ['Add image', 'Optional �
 $GLOBALS['TL_LANG']['tl_grounding_page']['singleSRC'] = ['Image', 'Select a file from the file tree.'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['size'] = ['Image size', 'Here you can set the image size.'];
 
-$GLOBALS['TL_LANG']['tl_grounding_page']['lastReviewed'] = ['Last reviewed on', 'Only change this when an actual editorial review has taken place – not automatically on every save. Recommended interval: every 3–6 months.'];
-
 $GLOBALS['TL_LANG']['tl_grounding_page']['published'] = ['Publish', 'Publish this entry.'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['start'] = ['Display from', 'The entry will only be shown from this date on.'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['stop'] = ['Display until', 'The entry will only be shown until this date.'];
@@ -46,7 +44,6 @@ $GLOBALS['TL_LANG']['tl_grounding_page']['facts_legend'] = 'Structured facts';
 $GLOBALS['TL_LANG']['tl_grounding_page']['sources_legend'] = 'Sources';
 $GLOBALS['TL_LANG']['tl_grounding_page']['related_legend'] = 'Related entities';
 $GLOBALS['TL_LANG']['tl_grounding_page']['media_legend'] = 'Media (optional)';
-$GLOBALS['TL_LANG']['tl_grounding_page']['review_legend'] = 'Recency';
 $GLOBALS['TL_LANG']['tl_grounding_page']['publish_legend'] = 'Publication settings';
 
 $GLOBALS['TL_LANG']['tl_grounding_page']['edit'] = ['Edit entry', 'Edit entry ID %s'];

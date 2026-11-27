@@ -18,7 +18,7 @@ check('reader: 200', 200 === $reader->status, "HTTP $reader->status");
 check('reader: h1 with entity name', 1 === preg_match('~<h1>\s*VeloNova\s*</h1>~', $reader->body));
 check('reader: placement and distinction', $reader->contains('Einordnung-Text') && $reader->contains('Abgrenzung-Text'));
 check('reader: core fact', 1 === preg_match('~<dt>Sitz</dt>\s*<dd>Hamburg~', $reader->body));
-check('reader: review date as time element', $reader->contains('<time datetime="2026-03-05">'));
+check('reader: old review date is not shown', !$reader->contains('2026-03-05') && !$reader->contains('Zuletzt geprüft'));
 check('reader: text content element', $reader->contains('Abschnitt-Inhalt'));
 check('reader: FAQ element', $reader->contains('<dt>Was ist das?</dt>'));
 check('reader: source link', $reader->contains('href="https://example.com/report"'));
@@ -44,13 +44,14 @@ check('json-ld: no review claim without a documented review', !$reader->contains
 check('reader: visible date of last change', $reader->contains('Zuletzt aktualisiert') && $reader->contains('<time datetime="2026-04-10">'));
 check('reader: facts heading names the entity', 1 === preg_match('~<h2>\s*VeloNova: Kerndaten\s*</h2>~', $reader->body));
 check('reader: sources heading names the entity', 1 === preg_match('~<h2>\s*Quellen zu VeloNova\s*</h2>~', $reader->body));
-check('reader: review date without core facts', $visitor->get('/fakt/nachbar')->contains('<time datetime="2026-02-03">'));
+$neighbour = $visitor->get('/fakt/nachbar');
+check('reader: old review date hidden without core facts', 200 === $neighbour->status && !$neighbour->contains('2026-02-03'));
 
 $english = $visitor->get('/en/fact/veloen');
 check('english: 200', 200 === $english->status, "HTTP $english->status");
 check('english: facts heading', 1 === preg_match('~<h2>\s*VeloEn: Key facts\s*</h2>~', $english->body));
 check('english: sources heading', 1 === preg_match('~<h2>\s*Sources for VeloEn\s*</h2>~', $english->body));
-check('english: date labels', $english->contains('Last reviewed') && $english->contains('Last updated'));
+check('english: date labels', !$english->contains('Last reviewed') && $english->contains('Last updated'));
 check('english: no German labels', !$english->contains('Kerndaten') && !$english->contains('Quellen') && !$english->contains('Zuletzt'));
 $product = nodeOfType(linkedData($english->body), 'Product');
 check('json-ld: facts stay on a Product', 'Weight' === ($product['additionalProperty'][0]['name'] ?? ''));

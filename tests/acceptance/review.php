@@ -90,3 +90,62 @@ check('review: admin deletes a record', $copyRecord > 0 && 0 === $count($copy));
 $document($admin, $copy);
 operate($admin, $admin->get('/contao?do=grounding_page&table=tl_grounding_page&id=1')->body, ['act=delete', "id=$copy"]);
 check('review: protocol is deleted with its entry', 0 === $count($copy) && false === $db->query("SELECT id FROM tl_grounding_page WHERE id=$copy")->fetch());
+
+$notice = 'Fakten geprüft von Erika Muster · Zuletzt von einem Menschen geprüft: ' . date('Y-m-d');
+$shown = static fn (): bool => $visitor->get('/fakt/pruefling')->contains($notice);
+$sql = static fn (string $query) => $db->exec($query);
+$entryForm = '/contao?do=grounding_page&table=tl_grounding_page&act=edit&id=50';
+
+$reader = $visitor->get('/fakt/pruefling');
+$webPage = nodeOfType(linkedData($reader->body), 'WebPage');
+check('notice: shown after approval', $reader->contains($notice));
+check('notice: same values on the WebPage node', date('Y-m-d') === ($webPage['lastReviewed'] ?? '') && 'Person' === ($webPage['reviewedBy']['@type'] ?? '') && 'Erika Muster' === ($webPage['reviewedBy']['name'] ?? ''), json_encode($webPage));
+check('notice: documenting user is not public', !$reader->contains('gp-editor'));
+check('notice: nested content is part of the page', $reader->contains('Verschachtelt'));
+
+$column = static fn (string $query): string => (string) $db->query($query)->fetchColumn();
+
+submit($admin, $entryForm, ['stop' => '2099-01-01 00:00']);
+check('notice: stays after saving the entry unchanged', '' !== $column('SELECT stop FROM tl_grounding_page WHERE id=50') && $shown());
+submit($admin, '/contao?do=grounding_page&table=tl_content&act=edit&id=50', ['cssID' => ['', 'probe']]);
+check('notice: stays after saving an element unchanged', str_contains($column('SELECT cssID FROM tl_content WHERE id=50'), 'probe') && $shown());
+submit($admin, $entryForm, []);
+check('notice: stays after saving the entry a second time', $shown());
+
+foreach ([
+    'changed element' => ["UPDATE tl_content SET text=CONCAT(text, '<p>Neu</p>') WHERE id=50", "UPDATE tl_content SET text=REPLACE(text, '<p>Neu</p>', '') WHERE id=50"],
+    'changed nested element' => ["UPDATE tl_content SET text=CONCAT(text, '<p>Neu</p>') WHERE id=52", "UPDATE tl_content SET text=REPLACE(text, '<p>Neu</p>', '') WHERE id=52"],
+    'hidden element' => ['UPDATE tl_content SET invisible=1 WHERE id=52', 'UPDATE tl_content SET invisible=0 WHERE id=52'],
+    'deleted element' => ['UPDATE tl_content SET pid=999999 WHERE id=52', 'UPDATE tl_content SET pid=51 WHERE id=52'],
+] as $label => [$change, $revert]) {
+    $sql($change);
+    $reader = $visitor->get('/fakt/pruefling');
+    check("notice: gone after $label", !$reader->contains('Fakten geprüft') && !$reader->contains('lastReviewed') && !$reader->contains('reviewedBy'));
+    $sql($revert);
+    check("notice: back after reverting $label", $shown());
+}
+
+$saved = $db->query('SELECT coreFacts FROM tl_grounding_page WHERE id=50')->fetchColumn();
+submit($admin, $entryForm, ['coreFacts' => [['value' => '2021', 'label' => 'Gegründet']]]);
+check('notice: gone after a changed fact', str_contains($column('SELECT coreFacts FROM tl_grounding_page WHERE id=50'), '2021') && !$shown());
+
+$records = $count(50);
+submit($editor, $reviews(50), ['note' => ''], 'tl_grounding_page_review_minor');
+check('minor: note required', $records === $count(50) && !$shown());
+submit($editor, $reviews(50), ['note' => 'Tippfehler'], 'tl_grounding_page_review_minor');
+check('minor: restores the notice with original date and reviewer', $records + 1 === $count(50) && $shown());
+
+$document($editor, 50, ['result' => 'rejected', 'checks' => [], 'note' => 'Zahl falsch']);
+check('rejected: removes the notice', !$shown());
+check('rejected: note is not public', !$visitor->get('/fakt/pruefling')->contains('Zahl falsch'));
+submit($editor, $reviews(50), ['note' => 'x'], 'tl_grounding_page_review_minor');
+check('rejected: no minor confirmation', !$shown());
+
+$english = static fn (): Response => $visitor->get('/en/fact/veloen');
+check('cache: no notice before a review', !$english()->contains('Facts checked by'));
+$document($admin, 40, ['reviewerName' => 'Cache Probe']);
+check('cache: approval is visible at once', $english()->contains('Facts checked by Cache Probe · Last reviewed by a human: ' . date('Y-m-d')));
+$sql("UPDATE tl_grounding_page_review SET reviewerName='Direkt geändert' WHERE pid=40");
+check('cache: page is served from the cache', $english()->contains('Cache Probe'));
+$document($admin, 40, ['result' => 'rejected', 'checks' => [], 'note' => 'nein']);
+check('cache: rejection removes the notice at once', !$english()->contains('Facts checked by'));

@@ -65,7 +65,6 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
             {sources_legend},sources;
             {related_legend},relatedPages;
             {media_legend:hide},addImage;
-            {review_legend},lastReviewed;
             {publish_legend},published,start,stop
         ',
     ],
@@ -198,10 +197,8 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
         ],
 
         'lastReviewed' => [
-            'inputType' => 'text',
-            'exclude'   => true,
-            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'doNotCopy' => true, 'tl_class' => 'w50 wizard'],
-            'sql'       => ['type' => 'string', 'length' => 10, 'default' => ''],
+            'eval' => ['doNotCopy' => true],
+            'sql'  => ['type' => 'string', 'length' => 10, 'default' => ''],
         ],
 
         'published' => [

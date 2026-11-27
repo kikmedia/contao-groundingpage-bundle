@@ -6,6 +6,7 @@ namespace Kikmedia\GroundingPageBundle\Util;
 
 use Contao\StringUtil;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Review\PublicReview;
 
 final class JsonLdBuilder
 {
@@ -85,6 +86,14 @@ final class JsonLdBuilder
         }
 
         return array_filter($data);
+    }
+
+    public static function reviewProperties(PublicReview $review): array
+    {
+        return [
+            'lastReviewed' => $review->date,
+            'reviewedBy'   => ['@type' => $review->reviewerType, 'name' => $review->reviewerName],
+        ];
     }
 
     public static function buildFaqPage(array $items, string $canonicalUrl, bool $inputEncoded = false): string|null

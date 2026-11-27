@@ -20,10 +20,10 @@ use Contao\StringUtil;
 use Kikmedia\GroundingPageBundle\Controller\ContentElement\GroundingPageFaqController;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageArchiveModel;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Review\ReviewService;
 use Kikmedia\GroundingPageBundle\Routing\EntryUrl;
 use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
 use Kikmedia\GroundingPageBundle\Util\PlainText;
-use Kikmedia\GroundingPageBundle\Util\ReviewDate;
 use Spatie\SchemaOrg\WebPage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +32,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 #[AsFrontendModule('grounding_page_reader', category: 'grounding_page')]
 class GroundingPageReaderController extends AbstractFrontendModuleController
 {
+    public function __construct(private readonly ReviewService $reviews)
+    {
+    }
+
     public static function getSubscribedServices(): array
     {
         $services = parent::getSubscribedServices();
@@ -56,6 +60,8 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
             throw new NotFoundHttpException('Grounding page entry not found.');
         }
 
+        $this->tagResponse('contao.db.tl_grounding_page.' . $entry->id);
+
         $template->archiveClass = (string) GroundingPageArchiveModel::findById($entry->pid)?->cssClass;
         $template->title = $entry->title;
         $template->entityType = 'other' === $entry->entityType && $entry->entityTypeCustom
@@ -70,9 +76,12 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $template->sources = array_filter((array) StringUtil::deserialize($entry->sources, true));
         $template->relatedPages = $this->getRelatedPages($entry);
 
-        $reviewed = ReviewDate::timestamp($entry->lastReviewed);
-        $template->lastReviewed = null === $reviewed ? '' : Date::parse(Config::get('dateFormat'), $reviewed);
-        $template->lastReviewedIso = ReviewDate::iso($entry->lastReviewed) ?? '';
+        $review = $this->reviews->state((int) $entry->id)->visibleReview();
+        $template->review = null === $review ? null : [
+            'reviewer' => $review->reviewerName,
+            'date'     => Date::parse(Config::get('dateFormat'), strtotime($review->date)),
+            'dateIso'  => $review->date,
+        ];
 
         $elements = ContentModel::findPublishedByPidAndTable($entry->id, 'tl_grounding_page');
         $template->content = $this->renderContentElements($elements);
@@ -82,7 +91,10 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $template->lastModifiedIso = $modified ? date('Y-m-d', $modified) : '';
 
         $encoded = PlainText::isInputEncoded();
-        $this->describePage(JsonLdBuilder::pageProperties($entry, $modified, $encoded));
+        $this->describePage(
+            JsonLdBuilder::pageProperties($entry, $modified, $encoded)
+            + (null === $review ? [] : JsonLdBuilder::reviewProperties($review))
+        );
         $template->jsonLd = JsonLdBuilder::build($entry, $request->getUri(), $encoded);
         $template->jsonLdFaq = JsonLdBuilder::buildFaqPage($this->collectFaqItems($elements), $request->getUri(), $encoded);
 

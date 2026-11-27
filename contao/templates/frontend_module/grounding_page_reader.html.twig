@@ -34,16 +34,10 @@
     </dl>
   {% endif %}
 
-  {% if lastReviewed or lastModified %}
+  {% if lastModified %}
     <dl>
-      {% if lastReviewed %}
-        <dt>{{ 'MSC.grounding_page_reviewed'|trans({}, 'contao_default') }}</dt>
-        <dd><time datetime="{{ lastReviewedIso }}">{{ lastReviewed }}</time></dd>
-      {% endif %}
-      {% if lastModified %}
-        <dt>{{ 'MSC.grounding_page_modified'|trans({}, 'contao_default') }}</dt>
-        <dd><time datetime="{{ lastModifiedIso }}">{{ lastModified }}</time></dd>
-      {% endif %}
+      <dt>{{ 'MSC.grounding_page_modified'|trans({}, 'contao_default') }}</dt>
+      <dd><time datetime="{{ lastModifiedIso }}">{{ lastModified }}</time></dd>
     </dl>
   {% endif %}
 
@@ -65,6 +59,10 @@
         {% endif %}
       {% endfor %}
     </ul>
+  {% endif %}
+
+  {% if review %}
+    <p>{{ 'MSC.grounding_page_review_notice'|trans([review.reviewer, review.date], 'contao_default') }}</p>
   {% endif %}
 
   {% if jsonLd %}

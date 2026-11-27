@@ -45,7 +45,8 @@ $saved = submit($admin, $entryUrl, ['title' => 'VeloNova Neu', 'alias' => '']);
 check('admin: save entry and generate alias', 200 === $saved->status && $saved->contains('value="velonova-neu"'), "HTTP $saved->status");
 $reader = $visitor->get('/fakt/velonova-neu');
 check('admin: saved entry keeps facts, sources and related', $reader->contains('<dt>Sitz</dt>') && $reader->contains('example.com/report') && $reader->contains('>Nachbar<'));
-check('admin: saved entry keeps review date', $reader->contains('<time datetime="2026-03-05">'));
+$form = $admin->get($entryUrl)->body;
+check('admin: entry form has no old review field', str_contains($form, 'name="definition"') && !str_contains($form, 'name="lastReviewed"'));
 
 $saved = submit($admin, $faqUrl, ['groundingPageItems' => [['value' => 'Neue Antwort & mehr', 'label' => 'Neue Frage?']]]);
 $reader = $visitor->get('/fakt/velonova-neu');

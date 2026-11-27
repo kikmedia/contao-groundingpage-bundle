@@ -28,5 +28,5 @@ $GLOBALS['TL_LANG']['MSC']['grounding_page_empty'] = 'Es sind noch keine Einträ
 $GLOBALS['TL_LANG']['MSC']['grounding_page_facts'] = '%s: Kerndaten';
 $GLOBALS['TL_LANG']['MSC']['grounding_page_sources'] = 'Quellen zu %s';
 $GLOBALS['TL_LANG']['MSC']['grounding_page_related'] = 'Verwandt:';
-$GLOBALS['TL_LANG']['MSC']['grounding_page_reviewed'] = 'Zuletzt geprüft';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_review_notice'] = 'Fakten geprüft von %s · Zuletzt von einem Menschen geprüft: %s';
 $GLOBALS['TL_LANG']['MSC']['grounding_page_modified'] = 'Zuletzt aktualisiert';
