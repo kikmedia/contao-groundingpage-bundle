@@ -1,4 +1,6 @@
-<div class="{{ class }} block">
+{% extends "@Contao/content_element/_base.html.twig" %}
+
+{% block content %}
   {% if items %}
     <dl>
       {% for item in items %}
@@ -7,4 +9,4 @@
       {% endfor %}
     </dl>
   {% endif %}
-</div>
+{% endblock %}

@@ -15,7 +15,7 @@ return (new Config())
     ->setRules([
         '@PSR12' => true,
         '@PSR12:risky' => true,
-        '@PHP84Migration' => true,
+        '@PHP83Migration' => true,
         'declare_strict_types' => true,
         'no_unused_imports' => true,
         'ordered_imports' => ['sort_algorithm' => 'alpha'],

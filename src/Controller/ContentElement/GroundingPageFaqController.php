@@ -12,7 +12,7 @@ use Contao\StringUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsContentElement('grounding_page_faq', category: 'grounding_page', template: 'ce_grounding_page_faq')]
+#[AsContentElement('grounding_page_faq', category: 'grounding_page')]
 class GroundingPageFaqController extends AbstractContentElementController
 {
     protected function getResponse(FragmentTemplate $template, ContentModel $model, Request $request): Response

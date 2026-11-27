@@ -1,17 +1,17 @@
-<div class="{{ class }} block" itemscope itemtype="https://schema.org/ItemList">
-  {% if headline %}
-    <{{ hl }}>{{ headline }}</{{ hl }}>
-  {% endif %}
+{% extends "@Contao/frontend_module/_base.html.twig" %}
 
+{% block content %}
   {% if items is empty %}
-    <p>{{ empty }}</p>
+    <p>{{ emptyMessage }}</p>
   {% else %}
-    <ul>
+    <ul itemscope itemtype="https://schema.org/ItemList">
       {% for item in items %}
         <li itemprop="itemListElement">
-          <a href="{{ item.href }}" itemprop="url">
+          {% if item.href %}
+            <a href="{{ item.href }}" itemprop="url"><span itemprop="name">{{ item.title }}</span></a>
+          {% else %}
             <span itemprop="name">{{ item.title }}</span>
-          </a>
+          {% endif %}
           {% if item.entityType %}
             <span> ({{ item.entityType }})</span>
           {% endif %}
@@ -22,4 +22,4 @@
       {% endfor %}
     </ul>
   {% endif %}
-</div>
+{% endblock %}

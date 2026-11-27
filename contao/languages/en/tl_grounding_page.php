@@ -50,10 +50,10 @@ $GLOBALS['TL_LANG']['tl_grounding_page']['review_legend'] = 'Recency';
 $GLOBALS['TL_LANG']['tl_grounding_page']['publish_legend'] = 'Publication settings';
 
 $GLOBALS['TL_LANG']['tl_grounding_page']['edit'] = ['Edit entry', 'Edit entry ID %s'];
-$GLOBALS['TL_LANG']['tl_grounding_page']['editheader'] = ['Edit archive', 'Edit archive settings'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['copy'] = ['Duplicate entry', 'Duplicate entry ID %s'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['cut'] = ['Move entry', 'Move entry ID %s'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['delete'] = ['Delete entry', 'Delete entry ID %s'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['toggle'] = ['Toggle publication', 'Toggle publication of entry ID %s'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['show'] = ['Entry details', 'Show the details of entry ID %s'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['new'] = ['New entry', 'Create a new entry'];
+$GLOBALS['TL_LANG']['tl_grounding_page']['children'] = ['Content elements', 'Edit the content elements of entry ID %s'];

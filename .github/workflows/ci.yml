@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.4']
+        php-version: ['8.3', '8.4']
     steps:
       - uses: actions/checkout@v4
 
@@ -47,9 +47,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.4']
-        contao-version: ['5.3.*', '6.0.*']
+        php-version: ['8.3', '8.4']
+        contao-version: ['5.3.*', '5.7.*', '6.0.*']
         dependencies: ['highest', 'lowest']
+        exclude:
+          - php-version: '8.3'
+            contao-version: '6.0.*'
     steps:
       - uses: actions/checkout@v4
 
@@ -71,14 +74,18 @@ jobs:
           dependency-versions: ${{ matrix.dependencies }}
 
   tests:
-    name: PHPUnit
+    name: PHPUnit (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.3', '8.4']
     steps:
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: ${{ matrix.php-version }}
           coverage: none
 
       - uses: ramsey/composer-install@v3
@@ -86,14 +93,18 @@ jobs:
       - run: vendor/bin/phpunit
 
   static-analysis:
-    name: PHPStan
+    name: PHPStan (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.3', '8.4']
     steps:
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: ${{ matrix.php-version }}
           coverage: none
 
       - uses: ramsey/composer-install@v3

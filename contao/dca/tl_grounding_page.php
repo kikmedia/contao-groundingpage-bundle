@@ -11,12 +11,10 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
         'ptable'           => 'tl_grounding_page_archive',
         'ctable'           => ['tl_content'],
         'enableVersioning' => true,
+        'switchToEdit'     => true,
         'markAsCopy'       => 'title',
         'onload_callback' => [
-            ['grounding_page.listener', 'checkPermission'],
-        ],
-        'oncopy_callback' => [
-            ['grounding_page.listener', 'resetOnCopy'],
+            ['grounding_page.listener', 'restrictEntries'],
         ],
         'sql' => [
             'keys' => [
@@ -28,53 +26,29 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
     ],
     'list' => [
         'sorting' => [
-            'mode'                  => DataContainer::MODE_PARENT,
-            'fields'                => ['sorting'],
-            'headerFields'          => ['title', 'entityType', 'jumpTo'],
-            'child_record_callback' => ['grounding_page.listener', 'listEntries'],
-            'panelLayout'           => 'filter;search,limit',
+            'mode'               => DataContainer::MODE_PARENT,
+            'fields'             => ['sorting'],
+            'headerFields'       => ['title', 'jumpTo'],
+            'panelLayout'        => 'filter;search,limit',
+            'defaultSearchField' => 'title',
         ],
         'label' => [
-            'fields' => ['title'],
-        ],
-        'global_operations' => [
-            'all' => [
-                'href'       => 'act=select',
-                'class'      => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset()"',
-            ],
+            'fields' => ['title', 'entityType'],
+            'format' => '%s <span class="label-info">[%s]</span>',
         ],
         'operations' => [
-            'edit' => [
-                'href' => 'act=edit',
-                'icon' => 'edit.svg',
-            ],
-            'editheader' => [
-                'href' => 'table=tl_grounding_page_archive&amp;act=edit',
-                'icon' => 'header.svg',
-            ],
-            'copy' => [
-                'href' => 'act=copy',
-                'icon' => 'copy.svg',
-            ],
-            'cut' => [
-                'href' => 'act=paste',
-                'icon' => 'cut.svg',
-            ],
-            'delete' => [
-                'href'       => 'act=delete',
-                'icon'       => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\'' . '%s' . '\'))return false;Backend.getScrollOffset()"',
-            ],
+            'edit',
+            'children',
+            'copy',
+            'cut',
+            'delete',
             'toggle' => [
-                'icon'       => 'visible.svg',
-                'attributes' => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleField(this,true)"',
-                'reverse'    => true,
+                'href'         => 'act=toggle&field=published',
+                'icon'         => 'visible.svg',
+                'primary'      => true,
+                'showInHeader' => true,
             ],
-            'show' => [
-                'href' => 'act=show',
-                'icon' => 'show.svg',
-            ],
+            'show',
         ],
     ],
     'palettes' => [
@@ -230,6 +204,7 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
             'inputType' => 'checkbox',
             'exclude'   => true,
             'filter'    => true,
+            'toggle'    => true,
             'eval'      => ['doNotCopy' => true],
             'sql'       => ['type' => 'boolean', 'default' => false],
         ],
