@@ -34,14 +34,10 @@ Getestet sind:
 
 ## Installation
 
-Solange das Paket nicht auf Packagist liegt, wird das GitHub-Repository im Contao-Projekt eingetragen:
+Das Paket liegt auf [Packagist](https://packagist.org/packages/kikmedia/contao-groundingpage-bundle). Solange es nur Vorabversionen gibt, muss die Stabilität mit angegeben werden. Im Hauptverzeichnis der Contao-Installation:
 
 ```bash
-composer config repositories.groundingpage vcs https://github.com/kikmedia/contao-groundingpage-bundle.git
-```
-
-```bash
-composer require kikmedia/contao-groundingpage-bundle:^0.1@alpha
+composer require "kikmedia/contao-groundingpage-bundle:^0.1@alpha"
 ```
 
 ```bash
@@ -139,6 +135,7 @@ Wer das Bundle vor der ersten Alpha aus dem Branch `main` installiert hat:
 
 - Die früheren `.html5`-Templates entfallen. Eigene Anpassungen daran müssen nach Twig übertragen werden.
 - Das FAQ-Feld heißt jetzt `groundingPageItems`.
+- Einen früher eingetragenen GitHub-Verweis unter `repositories` in der `composer.json` des Projekts entfernen und wie oben von Packagist installieren.
 - Nach dem Update `contao:migrate` ausführen.
 
 ## Entwicklung
