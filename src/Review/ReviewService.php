@@ -31,6 +31,11 @@ class ReviewService
         return Fingerprint::of($content['entry'], $content['elements']);
     }
 
+    public function hasHiddenContent(int $entryId): bool
+    {
+        return Fingerprint::hasHiddenElements($this->loader->load($entryId)['elements']);
+    }
+
     public function records(int $entryId): array
     {
         return $this->repository->findByEntry($entryId);

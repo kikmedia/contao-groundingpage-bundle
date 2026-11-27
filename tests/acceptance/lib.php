@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
+const PREVIEW_URL = 'http://127.0.0.1:8001';
+
 final readonly class Response
 {
     public function __construct(public int $status, public string $body, public string $url)
@@ -30,9 +32,9 @@ final class Browser
         return $this->send($url, null);
     }
 
-    public function post(string $url, array $data): Response
+    public function post(string $url, array $data, array $headers = []): Response
     {
-        return $this->send($url, $data);
+        return $this->send($url, $data, $headers);
     }
 
     public function login(string $username, string $password): Response
@@ -47,7 +49,7 @@ final class Browser
         return $this->post($page->url, $data + ['username' => $username, 'password' => $password]);
     }
 
-    private function send(string $url, array|null $data): Response
+    private function send(string $url, array|null $data, array $headers = []): Response
     {
         $url = absoluteUrl($url);
         $curl = curl_init($url);
@@ -61,7 +63,7 @@ final class Browser
 
         if (null !== $data) {
             curl_setopt($curl, \CURLOPT_POSTFIELDS, http_build_query($data));
-            curl_setopt($curl, \CURLOPT_HTTPHEADER, ['Origin: ' . BASE_URL, 'Referer: ' . $url]);
+            curl_setopt($curl, \CURLOPT_HTTPHEADER, ['Origin: ' . BASE_URL, 'Referer: ' . $url, ...$headers]);
         }
 
         $body = (string) curl_exec($curl);

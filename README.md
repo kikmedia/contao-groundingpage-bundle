@@ -118,6 +118,8 @@ Eine Prüfung gilt als veraltet, sobald sich Entitätsname, Typ, Definition, Ein
 
 War die Änderung unwesentlich (Tippfehler, Layout, Umformulierung ohne Faktenänderung, Versionshinweis), lässt sie sich im Protokoll mit einer Notiz **als unwesentlich bestätigen**. Prüfer und Datum der ursprünglichen Prüfung bleiben öffentlich.
 
+Zeigt die Frontend-Vorschau auch versteckte Elemente, bleibt der Prüfhinweis dort aus, sobald der Eintrag solche Elemente enthält.
+
 **Nicht erkannt** werden Änderungen an Dateimetadaten wie Alt-Texten, an eingebundenen Modulen oder referenzierten Elementen, an Titeln verwandter Einträge und an Templates. In diesen Fällen muss selbst neu geprüft werden.
 
 Bringt ein Update von Contao, diesem Bundle oder einer anderen Erweiterung neue Spalten mit Vorgabewert für Inhaltselemente, werden Prüfungen veraltet. Nach Updates lohnt ein Blick in die Eintragsliste.

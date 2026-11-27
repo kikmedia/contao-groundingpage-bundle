@@ -180,3 +180,26 @@ check('conformity: back once everything passes', $claimed());
 $db->exec('UPDATE tl_grounding_page SET claimConformity=1 WHERE id=40');
 $document($admin, 40);
 check('conformity: English link', $visitor->get('/en/fact/veloen')->contains('href="https://groundingpage.com/spec/v1.7/"'));
+
+$preview = static fn (): Response => $admin->get(PREVIEW_URL . '/fakt/pruefling');
+$switchPreview = static fn (string $unpublished): Response => $admin->post(
+    '/contao/preview_switch',
+    ['FORM_SUBMIT' => 'tl_switch', 'REQUEST_TOKEN' => $token($admin), 'unpublished' => $unpublished, 'user' => ''],
+    ['X-Requested-With: XMLHttpRequest']
+);
+$claims = static fn (Response $page): bool => $page->contains('Fakten geprüft') || $page->contains('lastReviewed') || $page->contains('reviewedBy') || $page->contains($de);
+
+$switched = $switchPreview('show');
+$page = $preview();
+check('preview: notice without hidden content', 204 === $switched->status && 200 === $page->status && $page->contains($notice), "HTTP $switched->status / $page->status");
+
+$db->exec("INSERT INTO tl_content (id, pid, ptable, sorting, tstamp, type, text, invisible) VALUES (900, 50, 'tl_grounding_page', 9000, UNIX_TIMESTAMP(), 'text', '<p>Versteckt</p>', 1)");
+$page = $preview();
+check('preview: shows hidden content', $page->contains('Versteckt'));
+check('preview: no review claim beside hidden content', 200 === $page->status && !$claims($page));
+check('preview: public page keeps the notice', $shown() && !$visitor->get('/fakt/pruefling')->contains('Versteckt'));
+
+$switchPreview('hide');
+$page = $preview();
+check('preview: notice while hidden content is not shown', $page->contains($notice) && !$page->contains('Versteckt'));
+$db->exec('DELETE FROM tl_content WHERE id=900');

@@ -21,15 +21,17 @@ final class Fingerprint
         'com_disableCaptcha', 'com_template', 'children',
     ];
 
-    private const CONTAO_MARKERS = [
-        '[{]' => '{{',
-        '[}]' => '}}',
-        '[&]' => '&',
-        '[lt]' => '<',
-        '[gt]' => '>',
-        '[nbsp]' => '&nbsp;',
-        '[-]' => '&shy;',
+    private const REPLACEMENTS = [
+        '&#123;&#123;' => '[{]',
+        '&#125;&#125;' => '[}]',
+        '[&]'          => '&',
+        '[lt]'         => '&lt;',
+        '[gt]'         => '&gt;',
+        '[nbsp]'       => '&nbsp;',
+        '[-]'          => '&shy;',
     ];
+
+    private const ENTITY = '~&(?:#\d+|#x[0-9a-f]+|[a-z][a-z0-9]*);~i';
 
     public static function of(array $entry, array $elements): string
     {
@@ -50,12 +52,28 @@ final class Fingerprint
         return self::VERSION . ':' . hash('sha256', json_encode($data, \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE));
     }
 
+    public static function hasHiddenElements(array $elements): bool
+    {
+        foreach ($elements as $row) {
+            if (self::isHidden($row) || self::hasHiddenElements($row['children'] ?? [])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function isHidden(array $row): bool
+    {
+        return !\in_array((string) ($row['invisible'] ?? ''), ['', '0'], true);
+    }
+
     private static function elements(array $elements): array
     {
         $nodes = [];
 
         foreach ($elements as $row) {
-            if (!\in_array((string) ($row['invisible'] ?? ''), ['', '0'], true)) {
+            if (self::isHidden($row)) {
                 continue;
             }
 
@@ -129,13 +147,19 @@ final class Fingerprint
             return 'hex:' . bin2hex($value);
         }
 
-        $value = strtr($value, self::CONTAO_MARKERS);
-
         do {
             $previous = $value;
-            $value = html_entity_decode($value, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML5, 'UTF-8');
+            $value = (string) preg_replace_callback(self::ENTITY, self::decodeEntity(...), strtr($value, self::REPLACEMENTS));
         } while ($value !== $previous);
 
         return $value;
+    }
+
+    private static function decodeEntity(array $match): string
+    {
+        $decoded = html_entity_decode($match[0], \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML5, 'UTF-8');
+        $literal = '{' === $decoded || '}' === $decoded || \in_array(strtolower($match[0]), ['&lt;', '&gt;'], true);
+
+        return $literal ? $match[0] : $decoded;
     }
 }

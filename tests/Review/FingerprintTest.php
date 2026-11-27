@@ -134,6 +134,38 @@ class FingerprintTest extends TestCase
         self::assertSame(Fingerprint::of($this->entry(), [$this->element()]), Fingerprint::of($this->entry(), [$changed]));
     }
 
+    #[DataProvider('literalAndLive')]
+    public function testLiteralTextNeverMatchesLiveCode(string $literal, string $live): void
+    {
+        self::assertNotSame(
+            Fingerprint::of($this->entry(), [$this->element(['text' => $literal])]),
+            Fingerprint::of($this->entry(), [$this->element(['text' => $live])])
+        );
+    }
+
+    public static function literalAndLive(): iterable
+    {
+        yield 'literal insert tag marker' => ['[{]insert_content::5[}]', '{{insert_content::5}}'];
+        yield 'encoded braces' => ['&#123;&#123;insert_content::5&#125;&#125;', '{{insert_content::5}}'];
+        yield 'named braces' => ['&lcub;&lcub;date&rcub;&rcub;', '{{date}}'];
+        yield 'hexadecimal braces' => ['&#x7B;&#x7B;date&#x7D;&#x7D;', '{{date}}'];
+        yield 'double encoded braces' => ['&amp;#123;&amp;#123;date&amp;#125;&amp;#125;', '{{date}}'];
+        yield 'one encoded brace' => ['&#123;{date}}', '{{date}}'];
+        yield 'escaped markup' => ['<p>&lt;b&gt;</p>', '<p><b></p>'];
+        yield 'double escaped markup' => ['<p>&amp;lt;b&amp;gt;</p>', '<p><b></p>'];
+        yield 'markup markers' => ['<p>[lt]b[gt]</p>', '<p><b></p>'];
+    }
+
+    public function testFindsHiddenElementsAtAnyDepth(): void
+    {
+        $hidden = $this->element(['invisible' => '1']);
+
+        self::assertFalse(Fingerprint::hasHiddenElements([]));
+        self::assertFalse(Fingerprint::hasHiddenElements([$this->element(['children' => [$this->element(['invisible' => '0'])]])]));
+        self::assertTrue(Fingerprint::hasHiddenElements([$hidden]));
+        self::assertTrue(Fingerprint::hasHiddenElements([$this->element(['children' => [$this->element(['children' => [$hidden]])]])]));
+    }
+
     private function entry(array $overrides = []): array
     {
         return $overrides + [

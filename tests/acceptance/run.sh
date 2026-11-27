@@ -34,7 +34,9 @@ php "$SUITE/seed.php"
 
 php -S 127.0.0.1:8000 -t public public/index.php >"$WORK/server.log" 2>&1 &
 SERVER=$!
-trap 'kill "$SERVER" 2>/dev/null || true' EXIT
+php -S 127.0.0.1:8001 -t public public/preview.php >"$WORK/preview.log" 2>&1 &
+PREVIEW=$!
+trap 'kill "$SERVER" "$PREVIEW" 2>/dev/null || true' EXIT
 
 tries=0
 until curl --silent --output /dev/null http://127.0.0.1:8000/contao/login; do

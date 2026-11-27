@@ -12,6 +12,7 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\CoreBundle\Routing\ResponseContext\JsonLd\JsonLdManager;
 use Contao\CoreBundle\Routing\ResponseContext\ResponseContextAccessor;
+use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Date;
 use Contao\Input;
@@ -22,6 +23,7 @@ use Kikmedia\GroundingPageBundle\Check\ConformityChecks;
 use Kikmedia\GroundingPageBundle\Controller\ContentElement\GroundingPageFaqController;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageArchiveModel;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Review\PublicReview;
 use Kikmedia\GroundingPageBundle\Review\ReviewService;
 use Kikmedia\GroundingPageBundle\Routing\EntryUrl;
 use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
@@ -45,6 +47,7 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $services = parent::getSubscribedServices();
         $services['contao.image.studio'] = Studio::class;
         $services['contao.routing.response_context_accessor'] = ResponseContextAccessor::class;
+        $services['contao.security.token_checker'] = TokenChecker::class;
 
         return $services;
     }
@@ -80,7 +83,7 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $template->sources = array_filter((array) StringUtil::deserialize($entry->sources, true));
         $template->relatedPages = $this->getRelatedPages($entry);
 
-        $review = $this->reviews->state((int) $entry->id)->visibleReview();
+        $review = $this->review((int) $entry->id);
         $template->review = null === $review ? null : [
             'reviewer' => $review->reviewerName,
             'date'     => Date::parse(Config::get('dateFormat'), strtotime($review->date)),
@@ -115,6 +118,21 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
             : null;
 
         return $template->getResponse();
+    }
+
+    private function review(int $entryId): PublicReview|null
+    {
+        $review = $this->reviews->state($entryId)->visibleReview();
+
+        if (
+            null !== $review
+            && $this->container->get('contao.security.token_checker')->isPreviewMode()
+            && $this->reviews->hasHiddenContent($entryId)
+        ) {
+            return null;
+        }
+
+        return $review;
     }
 
     private function conformityUrl(int $entryId, string $language): string|null
