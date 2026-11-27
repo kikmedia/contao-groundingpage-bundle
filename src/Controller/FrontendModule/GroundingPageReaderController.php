@@ -10,6 +10,8 @@ use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Image\Studio\Studio;
+use Contao\CoreBundle\Routing\ResponseContext\JsonLd\JsonLdManager;
+use Contao\CoreBundle\Routing\ResponseContext\ResponseContextAccessor;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Date;
 use Contao\Input;
@@ -22,6 +24,7 @@ use Kikmedia\GroundingPageBundle\Routing\EntryUrl;
 use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
 use Kikmedia\GroundingPageBundle\Util\PlainText;
 use Kikmedia\GroundingPageBundle\Util\ReviewDate;
+use Spatie\SchemaOrg\WebPage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -33,6 +36,7 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
     {
         $services = parent::getSubscribedServices();
         $services['contao.image.studio'] = Studio::class;
+        $services['contao.routing.response_context_accessor'] = ResponseContextAccessor::class;
 
         return $services;
     }
@@ -73,7 +77,12 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $elements = ContentModel::findPublishedByPidAndTable($entry->id, 'tl_grounding_page');
         $template->content = $this->renderContentElements($elements);
 
+        $modified = $this->lastModified($entry, $elements);
+        $template->lastModified = $modified ? Date::parse(Config::get('dateFormat'), $modified) : '';
+        $template->lastModifiedIso = $modified ? date('Y-m-d', $modified) : '';
+
         $encoded = PlainText::isInputEncoded();
+        $this->describePage(JsonLdBuilder::pageProperties($entry, $modified, $encoded));
         $template->jsonLd = JsonLdBuilder::build($entry, $request->getUri(), $encoded);
         $template->jsonLdFaq = JsonLdBuilder::buildFaqPage($this->collectFaqItems($elements), $request->getUri(), $encoded);
 
@@ -86,6 +95,32 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
             : null;
 
         return $template->getResponse();
+    }
+
+    private function describePage(array $properties): void
+    {
+        $context = $this->container->get('contao.routing.response_context_accessor')->getResponseContext();
+
+        if (!$context?->has(JsonLdManager::class)) {
+            return;
+        }
+
+        $page = $context->get(JsonLdManager::class)->getGraphForSchema(JsonLdManager::SCHEMA_ORG)->getOrCreate(WebPage::class);
+
+        foreach ($properties as $name => $value) {
+            $page->setProperty($name, $value);
+        }
+    }
+
+    private function lastModified(GroundingPageModel $entry, \Contao\Model\Collection|null $elements): int
+    {
+        $timestamps = [(int) $entry->tstamp];
+
+        foreach ($elements ?? [] as $element) {
+            $timestamps[] = (int) $element->tstamp;
+        }
+
+        return max($timestamps);
     }
 
     private function renderContentElements(\Contao\Model\Collection|null $elements): string

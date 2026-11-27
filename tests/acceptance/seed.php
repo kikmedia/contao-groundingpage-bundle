@@ -91,8 +91,9 @@ $entry(1, 'VeloNova', [
     'sources' => serialize([['value' => 'https://example.com/report', 'label' => 'Jahresbericht']]),
     'relatedPages' => serialize(['2', '3', '5']),
     'lastReviewed' => (string) mktime(0, 0, 0, 3, 5, 2026),
+    'tstamp' => mktime(12, 0, 0, 4, 1, 2026),
 ]);
-$entry(2, 'Nachbar');
+$entry(2, 'Nachbar', ['lastReviewed' => (string) mktime(0, 0, 0, 2, 3, 2026)]);
 $entry(3, 'Zukunft', ['start' => (string) ($now + 86400)]);
 $entry(4, 'Abgelaufen', ['stop' => (string) ($now - 86400)]);
 $entry(5, 'Entwurf', ['published' => 0]);
@@ -101,12 +102,27 @@ $entry(21, 'Fremdeintrag', ['pid' => 2]);
 
 $element = static fn (int $id, int $entryId, string $type, array $fields) => $put('tl_content', $fields + ['id' => $id, 'pid' => $entryId, 'ptable' => 'tl_grounding_page', 'sorting' => $id * 128, 'tstamp' => $now, 'type' => $type]);
 
-$element(10, 1, 'text', ['text' => '<p>Abschnitt-Inhalt</p>']);
+$element(10, 1, 'text', ['text' => '<p>Abschnitt-Inhalt</p>', 'tstamp' => mktime(12, 0, 0, 4, 10, 2026)]);
 $element(11, 1, 'grounding_page_faq', [
+    'tstamp' => mktime(12, 0, 0, 4, 2, 2026),
     'headline' => serialize(['unit' => 'h2', 'value' => 'Fragen']),
     'groundingPageItems' => serialize([['value' => $stored('Antwort </script><em>x</em>'), 'label' => 'Was ist das?']]),
 ]);
 $element(30, 20, 'text', ['text' => '<p>Geheimtext</p>']);
+
+$put('tl_page', $page + ['id' => 10, 'pid' => 0, 'sorting' => 256, 'title' => 'English', 'alias' => 'english', 'type' => 'root', 'language' => 'en', 'fallback' => 0, 'urlPrefix' => 'en', 'includeLayout' => 1, 'layout' => 1, 'useSSL' => 0, 'chmod' => '']);
+$put('tl_page', $page + ['id' => 12, 'pid' => 10, 'sorting' => 128, 'title' => 'Fact', 'alias' => 'fact', 'type' => 'regular', 'requireItem' => 1]);
+$put('tl_article', ['id' => 12, 'pid' => 12, 'sorting' => 128, 'tstamp' => $now, 'title' => 'Article', 'alias' => 'article-12', 'author' => $author, 'inColumn' => 'main', 'published' => 1]);
+$put('tl_content', ['id' => 12, 'pid' => 12, 'ptable' => 'tl_article', 'sorting' => 128, 'tstamp' => $now, 'type' => 'module', 'module' => 3]);
+$put('tl_module', ['id' => 3, 'pid' => 1, 'tstamp' => $now, 'name' => 'reader en', 'type' => 'grounding_page_reader', 'grounding_page_archives' => serialize(['3'])]);
+$put('tl_grounding_page_archive', ['id' => 3, 'tstamp' => $now, 'title' => 'English', 'jumpTo' => 12]);
+$entry(40, 'VeloEn', [
+    'pid' => 3,
+    'entityType' => 'Product',
+    'coreFacts' => serialize([['value' => '12 kg', 'label' => 'Weight']]),
+    'sources' => serialize([['value' => 'https://example.com/sheet', 'label' => 'Data sheet']]),
+    'lastReviewed' => (string) mktime(0, 0, 0, 3, 7, 2026),
+]);
 
 if (!is_dir("$project/files/gp")) {
     mkdir("$project/files/gp", 0o777, true);

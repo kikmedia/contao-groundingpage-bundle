@@ -15,28 +15,62 @@ class JsonLdBuilderTest extends TestCase
 
     public function testBuildsEntityJsonLd(): void
     {
-        $entry = $this->mockModel(GroundingPageModel::class, [
-            'entityType' => 'Organization',
-            'entityTypeCustom' => '',
-            'title' => 'VeloNova',
-            'definition' => 'A bicycle manufacturer.',
-            'lastReviewed' => '2026-01-15',
-            'coreFacts' => serialize([['label' => 'Founded', 'value' => '2014']]),
-            'sources' => serialize([]),
-        ]);
-
-        $data = json_decode(JsonLdBuilder::build($entry, 'https://example.com/velonova'), true);
+        $data = json_decode(JsonLdBuilder::build($this->entry(), 'https://example.com/velonova'), true);
 
         self::assertSame('Organization', $data['@type']);
         self::assertSame('VeloNova', $data['name']);
         self::assertSame('A bicycle manufacturer.', $data['description']);
         self::assertSame('https://example.com/velonova', $data['url']);
-        self::assertSame('2026-01-15', $data['dateModified']);
+    }
+
+    public function testLeavesOutWhatSchemaOrgDoesNotAllowOnAnOrganization(): void
+    {
+        $data = json_decode(JsonLdBuilder::build($this->entry(), 'https://example.com/velonova'), true);
+
+        self::assertSame(['@context', '@type', 'name', 'description', 'url'], array_keys($data));
+    }
+
+    public function testMirrorsFactsOnAProduct(): void
+    {
+        $data = json_decode(JsonLdBuilder::build($this->entry(['entityType' => 'Product']), 'https://example.com/velonova'), true);
+
         self::assertSame(
             [['@type' => 'PropertyValue', 'name' => 'Founded', 'value' => '2014']],
             $data['additionalProperty']
         );
-        self::assertArrayNotHasKey('citation', $data);
+    }
+
+    public function testMirrorsFactsOnACustomPlaceType(): void
+    {
+        $entry = $this->entry(['entityType' => 'other', 'entityTypeCustom' => 'LocalBusiness']);
+
+        $data = json_decode(JsonLdBuilder::build($entry, 'https://example.com/velonova'), true);
+
+        self::assertArrayHasKey('additionalProperty', $data);
+    }
+
+    public function testDescribesThePageWithSourcesAndLastChange(): void
+    {
+        $zone = date_default_timezone_get();
+        date_default_timezone_set('Europe/Berlin');
+
+        try {
+            $properties = JsonLdBuilder::pageProperties($this->entry(), 1793660400);
+        } finally {
+            date_default_timezone_set($zone);
+        }
+
+        self::assertSame('2026-11-03', $properties['dateModified']);
+        self::assertSame(
+            [['@type' => 'CreativeWork', 'name' => 'Annual report', 'url' => 'https://example.com/report.pdf']],
+            $properties['citation']
+        );
+        self::assertArrayNotHasKey('lastReviewed', $properties);
+    }
+
+    public function testDescribesNothingForAPageWithoutSourcesAndDate(): void
+    {
+        self::assertSame([], JsonLdBuilder::pageProperties($this->entry(['sources' => null]), null));
     }
 
     public function testUsesCustomEntityType(): void
@@ -55,27 +89,6 @@ class JsonLdBuilderTest extends TestCase
 
         self::assertSame('DefinedTerm', $data['@type']);
         self::assertArrayNotHasKey('description', $data);
-        self::assertArrayNotHasKey('dateModified', $data);
-    }
-
-    public function testBuildsCitationsFromSources(): void
-    {
-        $entry = $this->mockModel(GroundingPageModel::class, [
-            'entityType' => 'Organization',
-            'entityTypeCustom' => '',
-            'title' => 'VeloNova',
-            'definition' => '',
-            'lastReviewed' => '',
-            'coreFacts' => null,
-            'sources' => serialize([['label' => 'Annual report', 'value' => 'https://example.com/report.pdf']]),
-        ]);
-
-        $data = json_decode(JsonLdBuilder::build($entry, 'https://example.com/velonova'), true);
-
-        self::assertSame(
-            [['@type' => 'CreativeWork', 'name' => 'Annual report', 'url' => 'https://example.com/report.pdf']],
-            $data['citation']
-        );
     }
 
     public function testContentCannotCloseTheScriptElement(): void
@@ -101,7 +114,7 @@ class JsonLdBuilderTest extends TestCase
     public function testWritesPlainTextWhenContaoStoredEntities(): void
     {
         $entry = $this->mockModel(GroundingPageModel::class, [
-            'entityType' => 'Organization',
+            'entityType' => 'Product',
             'entityTypeCustom' => '',
             'title' => 'M&#38;M',
             'definition' => '&#60;b&#62;',
@@ -111,14 +124,15 @@ class JsonLdBuilderTest extends TestCase
         ]);
 
         $data = json_decode(JsonLdBuilder::build($entry, 'https://example.com/a', true), true);
+        $properties = JsonLdBuilder::pageProperties($entry, null, true);
         $faq = json_decode(JsonLdBuilder::buildFaqPage([['label' => '&#40;?&#41;', 'value' => '&#35;1']], 'https://example.com/a', true), true);
 
         self::assertSame('M&M', $data['name']);
         self::assertSame('<b>', $data['description']);
         self::assertSame('Sitz (HQ)', $data['additionalProperty'][0]['name']);
         self::assertSame('A = B', $data['additionalProperty'][0]['value']);
-        self::assertSame('"Report"', $data['citation'][0]['name']);
-        self::assertSame('https://example.com/?a=1', $data['citation'][0]['url']);
+        self::assertSame('"Report"', $properties['citation'][0]['name']);
+        self::assertSame('https://example.com/?a=1', $properties['citation'][0]['url']);
         self::assertSame('(?)', $faq['mainEntity'][0]['name']);
         self::assertSame('#1', $faq['mainEntity'][0]['acceptedAnswer']['text']);
     }
@@ -153,27 +167,16 @@ class JsonLdBuilderTest extends TestCase
         self::assertSame('Answer', $data['mainEntity'][0]['acceptedAnswer']['@type']);
     }
 
-    public function testDateModifiedFromTheTimestampThatContaoStores(): void
+    private function entry(array $overrides = []): GroundingPageModel
     {
-        $zone = date_default_timezone_get();
-        date_default_timezone_set('Europe/Berlin');
-
-        try {
-            $entry = $this->mockModel(GroundingPageModel::class, [
-                'entityType' => 'Organization',
-                'entityTypeCustom' => '',
-                'title' => 'VeloNova',
-                'definition' => '',
-                'lastReviewed' => '1793660400',
-                'coreFacts' => serialize([]),
-                'sources' => serialize([]),
-            ]);
-
-            $data = json_decode(JsonLdBuilder::build($entry, 'https://example.com/velonova'), true);
-
-            self::assertSame('2026-11-03', $data['dateModified']);
-        } finally {
-            date_default_timezone_set($zone);
-        }
+        return $this->mockModel(GroundingPageModel::class, $overrides + [
+            'entityType' => 'Organization',
+            'entityTypeCustom' => '',
+            'title' => 'VeloNova',
+            'definition' => 'A bicycle manufacturer.',
+            'lastReviewed' => '2026-01-15',
+            'coreFacts' => serialize([['label' => 'Founded', 'value' => '2014']]),
+            'sources' => serialize([['label' => 'Annual report', 'value' => 'https://example.com/report.pdf']]),
+        ]);
     }
 }

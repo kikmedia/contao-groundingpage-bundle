@@ -8,8 +8,6 @@ $GLOBALS['TL_LANG']['FMD']['grounding_page_reader'] = ['Grounding-Page Reader', 
 
 $GLOBALS['TL_LANG']['CTE']['grounding_page'] = 'Grounding-Page';
 
-$GLOBALS['TL_LANG']['MOD']['grounding_page'] = 'Grounding-Pages';
-
 $GLOBALS['TL_LANG']['tl_module']['grounding_page_archives'] = ['Archive', 'Wählen Sie die Archive aus, deren Einträge angezeigt werden sollen.'];
 $GLOBALS['TL_LANG']['tl_module']['grounding_page_legend'] = 'Grounding-Page Einstellungen';
 
@@ -26,3 +24,8 @@ $GLOBALS['TL_LANG']['tl_user']['groundingPages'] = ['Erlaubte Archive', 'Wählen
 $GLOBALS['TL_LANG']['tl_user']['groundingPagep'] = ['Berechtigungen', 'Legt fest, ob der Benutzer neue Archive anlegen bzw. Archive/Einträge löschen darf.'];
 
 $GLOBALS['TL_LANG']['MSC']['grounding_page_empty'] = 'Es sind noch keine Einträge vorhanden.';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_facts'] = '%s: Kerndaten';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_sources'] = 'Quellen zu %s';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_related'] = 'Verwandt:';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_reviewed'] = 'Zuletzt geprüft';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_modified'] = 'Zuletzt aktualisiert';

@@ -2,6 +2,26 @@
 
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die Versionsnummern folgen [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.1.0-alpha.2] – 2026-11-27
+
+### Geändert
+
+- `dateModified` ist das Datum der letzten Änderung am Eintrag oder an seinen Inhaltselementen, nicht mehr das Prüfdatum. Es erscheint zusätzlich sichtbar als „Zuletzt aktualisiert“.
+- `dateModified` und `citation` stehen am `WebPage`-Knoten von Contao statt an der Entität.
+- `additionalProperty` wird nur noch bei Typen ausgegeben, für die Schema.org die Eigenschaft vorsieht. Bei anderen Typen, zum Beispiel `Organization`, bleiben die Fakten sichtbar, entfallen aber im JSON-LD.
+- Die Überschriften der Kerndaten und Quellen nennen die Entität.
+- Die Datumsangaben stehen in einer eigenen Liste unterhalb der Kerndaten. Angepasste Reader-Templates sollten darauf geprüft werden.
+
+### Hinzugefügt
+
+- Zwischenüberschriften und Datumsbeschriftungen im Reader auf Deutsch und Englisch, passend zur Sprache der Website-Root.
+
+### Behoben
+
+- Im Backend stand in der Überschrift `MOD.grounding_page.0` statt „Grounding-Pages“.
+- Das Prüfdatum fehlte, wenn ein Eintrag keine Fakten hatte.
+- Beim Kopieren eines Eintrags wurde das Prüfdatum mitkopiert.
+
 ## [0.1.0-alpha.1] – 2026-11-27
 
 Erste Alpha-Version.

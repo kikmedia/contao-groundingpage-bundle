@@ -13,6 +13,10 @@ function open(Browser $browser, string $label, string|null $url, string $expecte
     $page = $browser->get($url);
     check($label, 200 === $page->status && $page->contains($expected), "HTTP $page->status, expected '$expected'");
 
+    $text = strip_tags(preg_replace('~<(script|style)\b.*?</\1>~s', '', $page->body));
+    preg_match_all('~\b(?:MOD|CTE|FMD|MSC|tl_[a-z_]+)\.[a-z_A-Z]+(?:\.[0-9])?\b~', $text, $keys);
+    check("$label: no untranslated language key", [] === $keys[0], implode(', ', array_unique($keys[0])));
+
     return $page->body;
 }
 
@@ -74,4 +78,6 @@ if (null !== $clipboard) {
     $copied = $admin->get($entryListUrl)->body;
     check('admin: copy creates a second entry', substr_count($copied, 'VeloNova Neu') > substr_count($entries, 'VeloNova Neu'));
     check('admin: copy is not published', 1 === substr_count($visitor->get('/fakten')->body, '>VeloNova Neu<'));
+    $reviewOfCopy = database()->query("SELECT lastReviewed FROM tl_grounding_page WHERE title LIKE 'VeloNova Neu%' ORDER BY id DESC LIMIT 1")->fetchColumn();
+    check('admin: copy carries no review date', '' === $reviewOfCopy, var_export($reviewOfCopy, true));
 }

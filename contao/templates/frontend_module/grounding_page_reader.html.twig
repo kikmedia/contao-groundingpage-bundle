@@ -23,7 +23,7 @@
   {% endif %}
 
   {% if coreFacts %}
-    <h2>{{ title }}: Kerndaten</h2>
+    <h2>{{ 'MSC.grounding_page_facts'|trans([title], 'contao_default') }}</h2>
     <dl>
       {% for fact in coreFacts %}
         {% if fact.label|default and fact.value|default('') != '' %}
@@ -31,9 +31,18 @@
           <dd>{{ fact.value }}</dd>
         {% endif %}
       {% endfor %}
+    </dl>
+  {% endif %}
+
+  {% if lastReviewed or lastModified %}
+    <dl>
       {% if lastReviewed %}
-        <dt>Zuletzt geprüft</dt>
+        <dt>{{ 'MSC.grounding_page_reviewed'|trans({}, 'contao_default') }}</dt>
         <dd><time datetime="{{ lastReviewedIso }}">{{ lastReviewed }}</time></dd>
+      {% endif %}
+      {% if lastModified %}
+        <dt>{{ 'MSC.grounding_page_modified'|trans({}, 'contao_default') }}</dt>
+        <dd><time datetime="{{ lastModifiedIso }}">{{ lastModified }}</time></dd>
       {% endif %}
     </dl>
   {% endif %}
@@ -42,13 +51,13 @@
 
   {% if relatedPages %}
     <p>
-      Verwandt:
+      {{ 'MSC.grounding_page_related'|trans({}, 'contao_default') }}
       {% for related in relatedPages %}{% if not loop.first %} · {% endif %}<a href="{{ related.href }}">{{ related.title }}</a>{% endfor %}
     </p>
   {% endif %}
 
   {% if sources %}
-    <h2>Quellen</h2>
+    <h2>{{ 'MSC.grounding_page_sources'|trans([title], 'contao_default') }}</h2>
     <ul>
       {% for source in sources %}
         {% if source.value|default %}
