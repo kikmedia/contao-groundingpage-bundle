@@ -55,3 +55,37 @@ $GLOBALS['TL_LANG']['tl_grounding_page']['show'] = ['Eintragsdetails', 'Details 
 $GLOBALS['TL_LANG']['tl_grounding_page']['new'] = ['Neuer Eintrag', 'Einen neuen Eintrag erstellen'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['children'] = ['Inhaltselemente', 'Die Inhaltselemente des Eintrags ID %s bearbeiten'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['reviews'] = ['Prüfungen', 'Prüfungen des Eintrags ID %s'];
+
+$GLOBALS['TL_LANG']['tl_grounding_page']['claimConformity'] = ['Konformität mit Version 1.7 angeben', 'Zeigt unter dem Prüfhinweis „Grounding Page Standard 1.7“, solange die Prüfung aktuell ist und alle Pflichtprüfungen bestehen.'];
+$GLOBALS['TL_LANG']['tl_grounding_page']['check_legend'] = 'Prüfung nach Standard 1.7';
+$GLOBALS['TL_LANG']['tl_grounding_page']['checkHeading'] = 'Prüfergebnisse (Stand: zuletzt gespeichert)';
+$GLOBALS['TL_LANG']['tl_grounding_page']['reviewStates'] = [
+    'current' => 'Prüfung aktuell',
+    'stale' => 'Prüfung veraltet',
+    'rejected' => 'Prüfung nicht freigegeben',
+    'missing' => 'Prüfung fehlt',
+];
+$GLOBALS['TL_LANG']['tl_grounding_page']['checkStates'] = [
+    'passed' => 'erfüllt',
+    'open' => 'offen',
+    'hint' => 'Hinweis',
+    'info' => 'Information',
+];
+$GLOBALS['TL_LANG']['tl_grounding_page']['checks'] = [
+    'p2' => 'P-2: Die Definition ist ausgefüllt.',
+    'p3' => 'P-3: Jede H2-Überschrift nennt den Entitätsnamen.',
+    'p4' => 'P-4: Mindestens ein Kernfakt hat Bezeichnung und Wert.',
+    'p5' => 'P-5: Ein spezifischer Entitätstyp ist gewählt (weder Thing noch WebPage).',
+    'p7' => 'P-7: Eintrag und Weiterleitungsseite sind öffentlich erreichbar und indexierbar.',
+    'p8' => 'P-8: Eine Faktenprüfung ist freigegeben und aktuell.',
+    'p6_alt' => 'P-6: Dem Bild fehlt in der Sprache der Weiterleitungsseite der Alt-Text.',
+    'p11' => 'P-11: Die Abgrenzung fehlt.',
+    'p12' => 'P-12: Es fehlt eine Quelle oder eine Quelle hat keine http(s)-Adresse.',
+    'p15' => 'P-15: Das Archiv hat keine Weiterleitungsseite oder ist in keinem Listen-Modul gewählt.',
+    'p16' => 'P-16: Die letzte Faktenprüfung ist älter als 6 Monate.',
+    'p16_late' => 'P-16: Die letzte Faktenprüfung ist älter als 12 Monate und sollte dringend wiederholt werden.',
+    'p6' => 'P-6: Die strukturierten Daten stammen aus den sichtbaren Feldern (bei unveränderten Templates).',
+    'p9' => 'P-9: Prüfhinweis, reviewedBy und lastReviewed stammen aus derselben dokumentierten Prüfung (bei unveränderten Templates).',
+    'p10' => 'P-10: Die Konformitätsangabe nennt Version 1.7 und erscheint nur bei bestandenen Pflichtprüfungen (bei unveränderten Templates).',
+    'legacy_date' => 'Altes Prüfdatum %s: ohne Protokoll, wird nicht angezeigt.',
+];

@@ -17,6 +17,8 @@ use Contao\Date;
 use Contao\Input;
 use Contao\ModuleModel;
 use Contao\StringUtil;
+use Kikmedia\GroundingPageBundle\Check\CheckContextFactory;
+use Kikmedia\GroundingPageBundle\Check\ConformityChecks;
 use Kikmedia\GroundingPageBundle\Controller\ContentElement\GroundingPageFaqController;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageArchiveModel;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
@@ -32,8 +34,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 #[AsFrontendModule('grounding_page_reader', category: 'grounding_page')]
 class GroundingPageReaderController extends AbstractFrontendModuleController
 {
-    public function __construct(private readonly ReviewService $reviews)
-    {
+    public function __construct(
+        private readonly ReviewService $reviews,
+        private readonly CheckContextFactory $contexts,
+    ) {
     }
 
     public static function getSubscribedServices(): array
@@ -83,6 +87,10 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
             'dateIso'  => $review->date,
         ];
 
+        $template->conformityUrl = null !== $review && $entry->claimConformity
+            ? $this->conformityUrl((int) $entry->id, $request->getLocale())
+            : null;
+
         $elements = ContentModel::findPublishedByPidAndTable($entry->id, 'tl_grounding_page');
         $template->content = $this->renderContentElements($elements);
 
@@ -107,6 +115,13 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
             : null;
 
         return $template->getResponse();
+    }
+
+    private function conformityUrl(int $entryId, string $language): string|null
+    {
+        $results = ConformityChecks::run($this->contexts->create($entryId));
+
+        return ConformityChecks::requiredPassed($results) ? ConformityChecks::statementUrl($language) : null;
     }
 
     private function describePage(array $properties): void

@@ -1,0 +1,8 @@
+<div class="widget clr">
+  <h3>{{ heading }}</h3>
+  <ul>
+    {% for item in items %}
+      <li data-state="{{ item.state }}"><strong>{{ item.label }}</strong> · {{ item.text }}</li>
+    {% endfor %}
+  </ul>
+</div>

@@ -58,6 +58,7 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
     'palettes' => [
         '__selector__' => ['entityType'],
         'default' => '
+            {check_legend},groundingPageChecks,claimConformity;
             {title_legend},title,alias,author;
             {entity_legend},entityType;
             {lead_legend},definition,placement,distinction;
@@ -86,6 +87,17 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
         ],
         'sorting' => [
             'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
+        ],
+
+        'groundingPageChecks' => [
+            'exclude' => false,
+            'eval'    => ['doNotShow' => true],
+        ],
+        'claimConformity' => [
+            'inputType' => 'checkbox',
+            'exclude'   => true,
+            'eval'      => ['doNotCopy' => true, 'tl_class' => 'clr'],
+            'sql'       => ['type' => 'boolean', 'default' => false],
         ],
 
         'title' => [

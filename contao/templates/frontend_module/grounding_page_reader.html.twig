@@ -65,6 +65,10 @@
     <p>{{ 'MSC.grounding_page_review_notice'|trans([review.reviewer, review.date], 'contao_default') }}</p>
   {% endif %}
 
+  {% if conformityUrl %}
+    <p><a href="{{ conformityUrl }}">Grounding Page Standard 1.7</a></p>
+  {% endif %}
+
   {% if jsonLd %}
     <script type="application/ld+json">
 {{ jsonLd|raw }}

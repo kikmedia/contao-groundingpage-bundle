@@ -149,3 +149,34 @@ $sql("UPDATE tl_grounding_page_review SET reviewerName='Direkt geändert' WHERE 
 check('cache: page is served from the cache', $english()->contains('Cache Probe'));
 $document($admin, 40, ['result' => 'rejected', 'checks' => [], 'note' => 'nein']);
 check('cache: rejection removes the notice at once', !$english()->contains('Facts checked by'));
+
+$de = 'href="https://groundingpage.com/spec/v1.7/de/"';
+$claimed = static fn (): bool => $visitor->get('/fakt/pruefling')->contains($de);
+$state = static fn (string $label) => check("list: shows $label", $admin->get('/contao?do=grounding_page&table=tl_grounding_page&id=1')->contains($label));
+
+$state('Prüfung nicht freigegeben');
+$db->prepare('UPDATE tl_grounding_page SET coreFacts=? WHERE id=50')->execute([$saved]);
+$document($editor, 50);
+$state('Prüfung aktuell');
+$state('Prüfung fehlt');
+
+check('conformity: not without the checkbox', $shown() && !$claimed());
+submit($admin, $entryForm, ['claimConformity' => '1']);
+check('conformity: shown with checkbox, review and passing checks', $shown() && $claimed() && $visitor->get('/fakt/pruefling')->contains('Grounding Page Standard 1.7'));
+
+$sql("UPDATE tl_content SET text='<h2>Preise</h2>' WHERE id=50");
+check('conformity: not on an outdated review', !$claimed());
+$state('Prüfung veraltet');
+$document($editor, 50);
+check('conformity: not while a required check fails', $shown() && !$claimed());
+$form = open($admin, 'checks: entry form', $entryForm, 'P-3');
+check('checks: failing requirement is marked open', 1 === preg_match('~offen.{0,200}P-3|P-3.{0,200}offen~s', strip_tags($form)));
+check('checks: old review date is named', str_contains($admin->get('/contao?do=grounding_page&table=tl_grounding_page&act=edit&id=1')->body, 'ohne Protokoll'));
+
+$sql("UPDATE tl_content SET text='<h2>Über Pruefling</h2><p>Inhalt</p>' WHERE id=50");
+$document($editor, 50);
+check('conformity: back once everything passes', $claimed());
+
+$db->exec('UPDATE tl_grounding_page SET claimConformity=1 WHERE id=40');
+$document($admin, 40);
+check('conformity: English link', $visitor->get('/en/fact/veloen')->contains('href="https://groundingpage.com/spec/v1.7/"'));
