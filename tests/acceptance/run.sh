@@ -49,6 +49,15 @@ status=0
 php "$SUITE/check.php" || status=$?
 
 if [ "$status" -ne 0 ]; then
+    if kill -0 "$SERVER" 2>/dev/null; then
+        echo "web server is still running"
+    else
+        code=0
+        wait "$SERVER" || code=$?
+        echo "web server stopped with status $code"
+    fi
+    echo "--- web server log ---"
+    grep -vE '\] [^ ]+ (Accepted|Closing)$' "$WORK/server.log" | tail -40 || true
     echo "--- application errors ---"
     grep -hE 'CRITICAL|\.ERROR' var/logs/*.log 2>/dev/null | grep -v 'contao:user:create' | cut -c1-400 | tail -20 || true
 fi
