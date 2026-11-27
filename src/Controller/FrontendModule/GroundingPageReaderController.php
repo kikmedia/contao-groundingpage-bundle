@@ -9,22 +9,34 @@ use Contao\ContentModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
+use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Date;
 use Contao\Input;
 use Contao\ModuleModel;
 use Contao\StringUtil;
 use Kikmedia\GroundingPageBundle\Controller\ContentElement\GroundingPageFaqController;
+use Kikmedia\GroundingPageBundle\Model\GroundingPageArchiveModel;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Routing\EntryUrl;
 use Kikmedia\GroundingPageBundle\Util\JsonLdBuilder;
+use Kikmedia\GroundingPageBundle\Util\PlainText;
 use Kikmedia\GroundingPageBundle\Util\ReviewDate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-#[AsFrontendModule('grounding_page_reader', category: 'grounding_page', template: 'mod_grounding_page_reader')]
+#[AsFrontendModule('grounding_page_reader', category: 'grounding_page')]
 class GroundingPageReaderController extends AbstractFrontendModuleController
 {
+    public static function getSubscribedServices(): array
+    {
+        $services = parent::getSubscribedServices();
+        $services['contao.image.studio'] = Studio::class;
+
+        return $services;
+    }
+
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $idOrAlias = Input::get('auto_item');
@@ -33,12 +45,14 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
             throw new NotFoundHttpException('Missing auto_item parameter.');
         }
 
-        $entry = GroundingPageModel::findPublishedByIdOrAlias((string) $idOrAlias);
+        $archiveIds = StringUtil::deserialize($model->grounding_page_archives, true);
+        $entry = GroundingPageModel::findPublishedByIdOrAlias((string) $idOrAlias, $archiveIds);
 
         if (null === $entry) {
             throw new NotFoundHttpException('Grounding page entry not found.');
         }
 
+        $template->archiveClass = (string) GroundingPageArchiveModel::findById($entry->pid)?->cssClass;
         $template->title = $entry->title;
         $template->entityType = 'other' === $entry->entityType && $entry->entityTypeCustom
             ? $entry->entityTypeCustom
@@ -59,17 +73,17 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $elements = ContentModel::findPublishedByPidAndTable($entry->id, 'tl_grounding_page');
         $template->content = $this->renderContentElements($elements);
 
-        $template->jsonLd = JsonLdBuilder::build($entry, $request->getUri());
-        $template->jsonLdFaq = JsonLdBuilder::buildFaqPage($this->collectFaqItems($elements), $request->getUri());
+        $encoded = PlainText::isInputEncoded();
+        $template->jsonLd = JsonLdBuilder::build($entry, $request->getUri(), $encoded);
+        $template->jsonLdFaq = JsonLdBuilder::buildFaqPage($this->collectFaqItems($elements), $request->getUri(), $encoded);
 
-        if ($entry->addImage && $entry->singleSRC) {
-            $file = \Contao\FilesModel::findByUuid($entry->singleSRC);
-
-            if (null !== $file && is_file(\Contao\System::getContainer()->getParameter('kernel.project_dir') . '/' . $file->path)) {
-                $template->addImage = true;
-                $template->image = \Contao\Image::getHtml($file->path, '', 'loading="lazy"');
-            }
-        }
+        $template->figure = $entry->addImage && $entry->singleSRC
+            ? $this->container->get('contao.image.studio')
+                ->createFigureBuilder()
+                ->fromUuid($entry->singleSRC)
+                ->setSize(StringUtil::deserialize($entry->size) ?: null)
+                ->buildIfResourceExists()
+            : null;
 
         return $template->getResponse();
     }
@@ -121,10 +135,14 @@ class GroundingPageReaderController extends AbstractFrontendModuleController
         $items = [];
 
         foreach ($related as $page) {
-            $items[] = [
-                'title' => $page->title,
-                'href'  => '/' . ($page->alias ?: $page->id),
-            ];
+            $href = EntryUrl::path($page);
+
+            if (null !== $href) {
+                $items[] = [
+                    'title' => $page->title,
+                    'href'  => $href,
+                ];
+            }
         }
 
         return $items;

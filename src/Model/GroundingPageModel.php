@@ -5,24 +5,27 @@ declare(strict_types=1);
 namespace Kikmedia\GroundingPageBundle\Model;
 
 use Contao\Database;
+use Contao\Date;
 use Contao\Model;
 use Contao\Model\Collection;
-use Contao\System;
 
 class GroundingPageModel extends Model
 {
     protected static $strTable = 'tl_grounding_page';
 
-    public static function findPublishedByIdOrAlias(string $idOrAlias): self|null
+    public static function findPublishedByIdOrAlias(string $idOrAlias, array $archiveIds): self|null
     {
-        $t = static::$strTable;
-        $arrColumns = is_numeric($idOrAlias) ? ["$t.id=?"] : ["$t.alias=?"];
-
-        if (!self::hasBackendUser()) {
-            $arrColumns[] = "$t.published='1'";
+        if (empty($archiveIds)) {
+            return null;
         }
 
-        return static::findOneBy($arrColumns, $idOrAlias);
+        $t = static::$strTable;
+        $columns = [
+            preg_match('/^[1-9]\d*$/', $idOrAlias) ? "$t.id=?" : "$t.alias=?",
+            self::inArchives($archiveIds),
+        ];
+
+        return static::findOneBy(self::visibleOnly($columns), [$idOrAlias]);
     }
 
     public static function findPublishedByPids(array $archiveIds, array $options = []): Collection|null
@@ -31,65 +34,51 @@ class GroundingPageModel extends Model
             return null;
         }
 
-        $t = static::$strTable;
-        $arrColumns = ["$t.pid IN (" . implode(',', array_map('\intval', $archiveIds)) . ')'];
+        $options['order'] ??= static::$strTable . '.sorting';
 
-        if (!self::hasBackendUser()) {
-            $arrColumns[] = "$t.published='1'";
-        }
-
-        if (!isset($options['order'])) {
-            $options['order'] = "$t.sorting";
-        }
-
-        return static::findBy($arrColumns, null, $options);
+        return static::findBy(self::visibleOnly([self::inArchives($archiveIds)]), null, $options);
     }
 
     public static function findAllPublished(): Collection|null
     {
-        $t = static::$strTable;
-
-        return static::findBy(["$t.published='1'"], null, ['order' => "$t.sorting"]);
+        return static::findBy([self::publicCondition()], null, ['order' => static::$strTable . '.sorting']);
     }
 
-    public static function findPublishedMultipleByIds(array $ids, bool $publishedOnly = true): Collection|null
+    public static function findPublishedMultipleByIds(array $ids): Collection|null
     {
         if (empty($ids)) {
             return null;
         }
 
         $t = static::$strTable;
-        $arrColumns = ["$t.id IN (" . implode(',', array_map('\intval', $ids)) . ')'];
-
-        if ($publishedOnly && !self::hasBackendUser()) {
-            $arrColumns[] = "$t.published='1'";
-        }
+        $columns = ["$t.id IN (" . implode(',', array_map('\intval', $ids)) . ')'];
 
         return static::findBy(
-            $arrColumns,
+            self::visibleOnly($columns),
             null,
             ['order' => Database::getInstance()->findInSet("$t.id", $ids)]
         );
     }
 
-    public static function countPublishedByPids(array $archiveIds): int
+    private static function inArchives(array $archiveIds): string
     {
-        if (empty($archiveIds)) {
-            return 0;
-        }
-
-        $t = static::$strTable;
-        $arrColumns = ["$t.pid IN (" . implode(',', array_map('\intval', $archiveIds)) . ')'];
-
-        if (!self::hasBackendUser()) {
-            $arrColumns[] = "$t.published='1'";
-        }
-
-        return static::countBy($arrColumns);
+        return static::$strTable . '.pid IN (' . implode(',', array_map('\intval', $archiveIds)) . ')';
     }
 
-    private static function hasBackendUser(): bool
+    private static function visibleOnly(array $columns): array
     {
-        return System::getContainer()->get('contao.security.token_checker')->hasBackendUser();
+        if (!static::isPreviewMode([])) {
+            $columns[] = self::publicCondition();
+        }
+
+        return $columns;
+    }
+
+    private static function publicCondition(): string
+    {
+        $t = static::$strTable;
+        $time = Date::floorToMinute();
+
+        return "$t.published=1 AND ($t.start='' OR $t.start<=$time) AND ($t.stop='' OR $t.stop>$time)";
     }
 }

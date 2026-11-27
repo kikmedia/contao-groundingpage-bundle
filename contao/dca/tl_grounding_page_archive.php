@@ -11,7 +11,7 @@ $GLOBALS['TL_DCA']['tl_grounding_page_archive'] = [
         'ctable'           => ['tl_grounding_page'],
         'enableVersioning' => true,
         'onload_callback' => [
-            ['grounding_page.listener', 'checkArchivePermission'],
+            ['grounding_page.listener', 'restrictArchives'],
         ],
         'sql' => [
             'keys' => [
@@ -30,35 +30,12 @@ $GLOBALS['TL_DCA']['tl_grounding_page_archive'] = [
             'fields' => ['title'],
             'format' => '%s',
         ],
-        'global_operations' => [
-            'all' => [
-                'href'            => 'act=select',
-                'class'           => 'header_edit_all',
-                'attributes'      => 'onclick="Backend.getScrollOffset()"',
-            ],
-        ],
         'operations' => [
-            'edit' => [
-                'href' => 'table=tl_grounding_page',
-                'icon' => 'edit.svg',
-            ],
-            'editheader' => [
-                'href' => 'act=edit',
-                'icon' => 'header.svg',
-            ],
-            'copy' => [
-                'href' => 'act=copy',
-                'icon' => 'copy.svg',
-            ],
-            'delete' => [
-                'href'       => 'act=delete',
-                'icon'       => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\'' . '%s' . '\'))return false;Backend.getScrollOffset()"',
-            ],
-            'show' => [
-                'href' => 'act=show',
-                'icon' => 'show.svg',
-            ],
+            'edit',
+            'children',
+            'copy',
+            'delete',
+            'show',
         ],
     ],
     'palettes' => [

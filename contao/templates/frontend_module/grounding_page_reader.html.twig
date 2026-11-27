@@ -1,9 +1,15 @@
-<article class="{{ class }} block">
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+{% use "@Contao/component/_figure.html.twig" %}
 
+{% block wrapper_tag %}article{% endblock %}
+
+{% block attributes %}{{ attributes.addClass(archiveClass) }}{% endblock %}
+
+{% block content %}
   <h1>{{ title }}</h1>
 
-  {% if addImage and image %}
-    {{ image|raw }}
+  {% if figure %}
+    {{ block('figure_component') }}
   {% endif %}
 
   {% if definition %}
@@ -20,7 +26,7 @@
     <h2>{{ title }}: Kerndaten</h2>
     <dl>
       {% for fact in coreFacts %}
-        {% if fact.label is defined and fact.label and fact.value is defined and fact.value != '' %}
+        {% if fact.label|default and fact.value|default('') != '' %}
           <dt>{{ fact.label }}</dt>
           <dd>{{ fact.value }}</dd>
         {% endif %}
@@ -32,9 +38,7 @@
     </dl>
   {% endif %}
 
-  {% if content %}
-    {{ content|raw }}
-  {% endif %}
+  {{ content|raw }}
 
   {% if relatedPages %}
     <p>
@@ -47,23 +51,22 @@
     <h2>Quellen</h2>
     <ul>
       {% for source in sources %}
-        {% if source.value is defined and source.value %}
+        {% if source.value|default %}
           <li><a href="{{ source.value }}" rel="noreferrer noopener" target="_blank">{{ source.label|default(source.value) }}</a></li>
         {% endif %}
       {% endfor %}
     </ul>
   {% endif %}
 
-</article>
-
-{% if jsonLd %}
-<script type="application/ld+json">
+  {% if jsonLd %}
+    <script type="application/ld+json">
 {{ jsonLd|raw }}
-</script>
-{% endif %}
+    </script>
+  {% endif %}
 
-{% if jsonLdFaq %}
-<script type="application/ld+json">
+  {% if jsonLdFaq %}
+    <script type="application/ld+json">
 {{ jsonLdFaq|raw }}
-</script>
-{% endif %}
+    </script>
+  {% endif %}
+{% endblock %}

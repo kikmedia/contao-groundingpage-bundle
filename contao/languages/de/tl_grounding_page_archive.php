@@ -10,8 +10,8 @@ $GLOBALS['TL_LANG']['tl_grounding_page_archive']['title_legend'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['jumpTo_legend'] = 'Weiterleitung';
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['expert_legend'] = 'Experteneinstellungen';
 
-$GLOBALS['TL_LANG']['tl_grounding_page_archive']['edit'] = ['Archiv bearbeiten', 'Archiv ID %s bearbeiten'];
-$GLOBALS['TL_LANG']['tl_grounding_page_archive']['editheader'] = ['Archiv-Einstellungen bearbeiten', 'Einstellungen des Archivs ID %s bearbeiten'];
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['edit'] = ['Archiv-Einstellungen bearbeiten', 'Einstellungen des Archivs ID %s bearbeiten'];
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['children'] = ['Einträge bearbeiten', 'Die Einträge des Archivs ID %s bearbeiten'];
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['copy'] = ['Archiv duplizieren', 'Archiv ID %s duplizieren'];
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['delete'] = ['Archiv löschen', 'Archiv ID %s löschen'];
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['show'] = ['Archivdetails', 'Details des Archivs ID %s anzeigen'];

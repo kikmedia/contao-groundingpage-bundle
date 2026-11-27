@@ -6,9 +6,8 @@ namespace Kikmedia\GroundingPageBundle\EventListener;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\SitemapEvent;
-use Contao\PageModel;
-use Kikmedia\GroundingPageBundle\Model\GroundingPageArchiveModel;
 use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
+use Kikmedia\GroundingPageBundle\Routing\EntryUrl;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener(ContaoCoreEvents::SITEMAP)]
@@ -23,13 +22,7 @@ class SitemapListener
         }
 
         foreach ($entries as $entry) {
-            $archive = GroundingPageArchiveModel::findById($entry->pid);
-
-            if (null === $archive || !$archive->jumpTo) {
-                continue;
-            }
-
-            $page = PageModel::findPublishedById($archive->jumpTo);
+            $page = EntryUrl::readerPage($entry);
 
             if (null === $page) {
                 continue;
@@ -41,7 +34,7 @@ class SitemapListener
                 continue;
             }
 
-            $url = $page->getAbsoluteUrl('/' . ($entry->alias ?: $entry->id));
+            $url = $page->getAbsoluteUrl(EntryUrl::parameters($entry));
 
             $event->addUrlToDefaultUrlSet($url);
         }

@@ -11,3 +11,6 @@ $GLOBALS['BE_MOD']['content']['grounding_page'] = [
 
 $GLOBALS['TL_MODELS']['tl_grounding_page_archive'] = GroundingPageArchiveModel::class;
 $GLOBALS['TL_MODELS']['tl_grounding_page'] = GroundingPageModel::class;
+
+$GLOBALS['TL_PERMISSIONS'][] = 'groundingPages';
+$GLOBALS['TL_PERMISSIONS'][] = 'groundingPagep';

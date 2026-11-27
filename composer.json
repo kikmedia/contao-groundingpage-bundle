@@ -1,7 +1,7 @@
 {
     "name": "kikmedia/contao-groundingpage-bundle",
     "type": "contao-bundle",
-    "description": "Grounding-Page Extension für Contao 5 & 6: Backend-Verwaltung und Frontend-Ausgabe von Referenzseiten nach dem Grounding Page Standard (groundingpage.com/spec), inkl. JSON-LD-Spiegelung, eigener Backend-Berechtigungsgruppe und Sitemap-Integration.",
+    "description": "Grounding-Page Extension für Contao 5 & 6: Backend-Verwaltung und Frontend-Ausgabe von Referenzseiten nach dem Grounding Page Standard (groundingpage.com/spec), inkl. JSON-LD-Spiegelung, FAQ-Element, Backend-Berechtigungen und Sitemap-Integration.",
     "keywords": ["contao", "grounding page", "ai seo", "json-ld", "structured data", "schema.org"],
     "license": "LGPL-3.0-or-later",
     "homepage": "https://github.com/kikmedia/contao-groundingpage-bundle/",
@@ -16,7 +16,7 @@
         "source": "https://github.com/kikmedia/contao-groundingpage-bundle"
     },
     "require": {
-        "php": "^8.4",
+        "php": "^8.3",
         "contao/core-bundle": "^5.3 || ^6.0"
     },
     "require-dev": {

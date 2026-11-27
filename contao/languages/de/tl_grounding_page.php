@@ -50,10 +50,10 @@ $GLOBALS['TL_LANG']['tl_grounding_page']['review_legend'] = 'Aktualität';
 $GLOBALS['TL_LANG']['tl_grounding_page']['publish_legend'] = 'Veröffentlichung';
 
 $GLOBALS['TL_LANG']['tl_grounding_page']['edit'] = ['Eintrag bearbeiten', 'Eintrag ID %s bearbeiten'];
-$GLOBALS['TL_LANG']['tl_grounding_page']['editheader'] = ['Archiv bearbeiten', 'Archiv-Einstellungen bearbeiten'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['copy'] = ['Eintrag duplizieren', 'Eintrag ID %s duplizieren'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['cut'] = ['Eintrag verschieben', 'Eintrag ID %s verschieben'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['delete'] = ['Eintrag löschen', 'Eintrag ID %s löschen'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['toggle'] = ['Veröffentlichung umschalten', 'Veröffentlichung des Eintrags ID %s umschalten'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['show'] = ['Eintragsdetails', 'Details des Eintrags ID %s anzeigen'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['new'] = ['Neuer Eintrag', 'Einen neuen Eintrag erstellen'];
+$GLOBALS['TL_LANG']['tl_grounding_page']['children'] = ['Inhaltselemente', 'Die Inhaltselemente des Eintrags ID %s bearbeiten'];
