@@ -18,7 +18,7 @@ $GLOBALS['TL_DCA']['tl_user_group']['fields']['groundingPages'] = [
 
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['groundingPagep'] = [
     'inputType' => 'checkbox',
-    'options'   => ['create', 'delete'],
+    'options'   => ['create', 'delete', 'review'],
     'reference' => &$GLOBALS['TL_LANG']['tl_user_group']['groundingPagepRef'],
     'eval'      => ['multiple' => true],
     'sql'       => ['type' => 'blob', 'notnull' => false],

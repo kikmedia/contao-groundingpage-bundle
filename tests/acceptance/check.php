@@ -6,6 +6,7 @@ require __DIR__ . '/lib.php';
 require __DIR__ . '/frontend.php';
 require __DIR__ . '/backend.php';
 require __DIR__ . '/editor.php';
+require __DIR__ . '/review.php';
 
 printf("\n%d checks, %d failed\n", $GLOBALS['checks'], $GLOBALS['failures']);
 

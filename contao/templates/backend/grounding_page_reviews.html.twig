@@ -1,0 +1,140 @@
+<div id="tl_buttons">
+  <a href="{{ backUrl }}" class="header_back">{{ back }}</a>
+</div>
+
+{{ messages|raw }}
+
+{% if errors %}
+  <div class="tl_message">
+    {% for error in errors %}
+      <p class="tl_error">{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="tl_formbody_edit">
+  <div class="tl_tbox">
+    <h2>{{ title }}</h2>
+    <h3>{{ labels.history }}</h3>
+
+    {% if rows is empty %}
+      <p>{{ labels.empty }}</p>
+    {% else %}
+      <table class="tl_listing showColumns">
+        <thead>
+          <tr>
+            {% for column in ['date', 'reviewer', 'documentedBy', 'result', 'state', 'note'] %}
+              <th class="tl_folder_tlist">{{ attribute(labels, column) }}</th>
+            {% endfor %}
+            {% if canDelete %}<th class="tl_folder_tlist"></th>{% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+            <tr>
+              {% for column in ['date', 'reviewer', 'documentedBy', 'result', 'state', 'note'] %}
+                <td class="tl_file_list">{{ attribute(row, column) }}</td>
+              {% endfor %}
+              {% if canDelete %}
+                <td class="tl_file_list">
+                  <form action="{{ action }}" method="post" data-turbo="false" onsubmit="return confirm({{ labels.deleteConfirm|json_encode|e('html_attr') }})">
+                    <input type="hidden" name="REQUEST_TOKEN" value="{{ requestToken }}">
+                    <input type="hidden" name="FORM_SUBMIT" value="tl_grounding_page_review_delete">
+                    <input type="hidden" name="record" value="{{ row.id }}">
+                    <button type="submit" class="tl_submit">{{ labels.delete }}</button>
+                  </form>
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+
+  {% if not canReview %}
+    <div class="tl_tbox"><p class="tl_info">{{ labels.readOnly }}</p></div>
+  {% endif %}
+</div>
+
+{% if canReview and canConfirm %}
+  <form action="{{ action }}" method="post" class="tl_form" data-turbo="false">
+    <div class="tl_formbody_edit">
+      <input type="hidden" name="REQUEST_TOKEN" value="{{ requestToken }}">
+      <input type="hidden" name="FORM_SUBMIT" value="tl_grounding_page_review_minor">
+      <input type="hidden" name="fingerprint" value="{{ fingerprint }}">
+      <div class="tl_tbox">
+        <h3>{{ labels.minor }}</h3>
+        <p>{{ labels.minorHelp }}</p>
+        <div class="widget clr">
+          <h3><label for="ctrl_minor_note">{{ labels.minorNote }}</label></h3>
+          <textarea name="note" id="ctrl_minor_note" class="tl_textarea" rows="3" cols="80">{{ minorNote }}</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="tl_formbody_submit">
+      <div class="tl_submit_container">
+        <button type="submit" class="tl_submit">{{ labels.minor }}</button>
+      </div>
+    </div>
+  </form>
+{% endif %}
+
+{% if canReview %}
+  <form action="{{ action }}" method="post" class="tl_form" data-turbo="false">
+    <div class="tl_formbody_edit">
+      <input type="hidden" name="REQUEST_TOKEN" value="{{ requestToken }}">
+      <input type="hidden" name="FORM_SUBMIT" value="tl_grounding_page_review">
+      <input type="hidden" name="fingerprint" value="{{ fingerprint }}">
+      <div class="tl_tbox">
+        <h3>{{ labels.new }}</h3>
+        <div class="widget w50">
+          <h3><label for="ctrl_date">{{ labels.date }}</label></h3>
+          <input type="date" name="date" id="ctrl_date" class="tl_text" value="{{ form.date }}">
+        </div>
+        <div class="widget w50 clr">
+          <h3><label for="ctrl_reviewerType">{{ labels.reviewerType }}</label></h3>
+          <select name="reviewerType" id="ctrl_reviewerType" class="tl_select">
+            <option value="">-</option>
+            {% for type in types %}
+              <option value="{{ type }}"{% if form.reviewerType == type %} selected{% endif %}>{{ attribute(labels.reviewerTypes, type) }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="widget w50">
+          <h3><label for="ctrl_reviewerName">{{ labels.reviewerName }}</label></h3>
+          <input type="text" name="reviewerName" id="ctrl_reviewerName" class="tl_text" maxlength="255" value="{{ form.reviewerName }}">
+          <p class="tl_help tl_tip">{{ labels.reviewerHelp }}</p>
+        </div>
+        <div class="widget clr">
+          <fieldset class="tl_checkbox_container">
+            <legend>{{ labels.checks }}</legend>
+            {% for check in checks %}
+              <input type="checkbox" name="checks[]" id="check_{{ check }}" class="tl_checkbox" value="{{ check }}"{% if check in form.checks %} checked{% endif %}>
+              <label for="check_{{ check }}">{{ attribute(labels.checkLabels, check) }}</label><br>
+            {% endfor %}
+          </fieldset>
+        </div>
+        <div class="widget clr">
+          <fieldset class="tl_radio_container">
+            <legend>{{ labels.result }}</legend>
+            {% for result in ['approved', 'rejected'] %}
+              <input type="radio" name="result" id="result_{{ result }}" class="tl_radio" value="{{ result }}"{% if form.result == result %} checked{% endif %}>
+              <label for="result_{{ result }}">{{ attribute(labels.results, result) }}</label><br>
+            {% endfor %}
+          </fieldset>
+        </div>
+        <div class="widget clr">
+          <h3><label for="ctrl_note">{{ labels.note }}</label></h3>
+          <textarea name="note" id="ctrl_note" class="tl_textarea" rows="3" cols="80">{{ form.note }}</textarea>
+          <p class="tl_help tl_tip">{{ labels.noteHelp }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="tl_formbody_submit">
+      <div class="tl_submit_container">
+        <button type="submit" class="tl_submit">{{ labels.save }}</button>
+      </div>
+    </div>
+  </form>
+{% endif %}

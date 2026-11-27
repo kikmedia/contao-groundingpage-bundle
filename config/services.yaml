@@ -9,6 +9,10 @@ services:
         exclude:
             - '../src/{ContaoManager,Model,GroundingPageBundle.php}'
 
+    Kikmedia\GroundingPageBundle\Review\ReviewService:
+        arguments:
+            $cacheManager: '@?fos_http_cache.cache_manager'
+
     grounding_page.listener:
         alias: Kikmedia\GroundingPageBundle\EventListener\DataContainer\GroundingPageListener
         public: true

@@ -39,7 +39,7 @@ $GLOBALS['TL_DCA']['tl_grounding_page_archive'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{title_legend},title;{jumpTo_legend},jumpTo;{expert_legend:hide},cssClass',
+        'default' => '{title_legend},title;{jumpTo_legend},jumpTo;{review_legend},reviewerType,reviewerName;{expert_legend:hide},cssClass',
     ],
     'fields' => [
         'id' => [
@@ -64,6 +64,20 @@ $GLOBALS['TL_DCA']['tl_grounding_page_archive'] = [
             'foreignKey'     => 'tl_page.title',
             'sql'            => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
             'relation'       => ['type' => 'hasOne', 'load' => 'lazy'],
+        ],
+        'reviewerType' => [
+            'inputType' => 'select',
+            'exclude'   => true,
+            'options'   => ['Person', 'Organization'],
+            'reference' => &$GLOBALS['TL_LANG']['tl_grounding_page_archive']['reviewerTypes'],
+            'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
+            'sql'       => ['type' => 'string', 'length' => 16, 'default' => ''],
+        ],
+        'reviewerName' => [
+            'inputType' => 'text',
+            'exclude'   => true,
+            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+            'sql'       => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'cssClass' => [
             'inputType' => 'text',

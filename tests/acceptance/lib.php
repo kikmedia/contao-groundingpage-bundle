@@ -217,14 +217,15 @@ function operate(Browser $browser, string $html, array $parts): Response|null
     return null;
 }
 
-function submit(Browser $browser, string|null $url, array $changes): Response
+function submit(Browser $browser, string|null $url, array $changes, string $form = ''): Response
 {
     if (null === $url) {
         return new Response(0, '', '');
     }
 
     $page = xpath($browser->get($url)->body);
-    $form = $page->query('//form[.//input[@name="FORM_SUBMIT"][starts-with(@value, "tl_") and @value!="tl_filters"]]')->item(0);
+    $marker = '' === $form ? '[starts-with(@value, "tl_") and @value!="tl_filters"]' : "[@value=\"$form\"]";
+    $form = $page->query("//form[.//input[@name=\"FORM_SUBMIT\"]$marker]")->item(0);
 
     if (null === $form) {
         return new Response(0, '', $url);

@@ -13,4 +13,6 @@ final class GroundingPagePermissions
     public const CREATE = 'contao_user.groundingPagep.create';
 
     public const DELETE = 'contao_user.groundingPagep.delete';
+
+    public const REVIEW = 'contao_user.groundingPagep.review';
 }

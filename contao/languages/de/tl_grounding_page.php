@@ -57,3 +57,4 @@ $GLOBALS['TL_LANG']['tl_grounding_page']['toggle'] = ['Veröffentlichung umschal
 $GLOBALS['TL_LANG']['tl_grounding_page']['show'] = ['Eintragsdetails', 'Details des Eintrags ID %s anzeigen'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['new'] = ['Neuer Eintrag', 'Einen neuen Eintrag erstellen'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['children'] = ['Inhaltselemente', 'Die Inhaltselemente des Eintrags ID %s bearbeiten'];
+$GLOBALS['TL_LANG']['tl_grounding_page']['reviews'] = ['Prüfungen', 'Prüfungen des Eintrags ID %s'];

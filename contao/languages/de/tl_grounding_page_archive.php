@@ -16,3 +16,8 @@ $GLOBALS['TL_LANG']['tl_grounding_page_archive']['copy'] = ['Archiv duplizieren'
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['delete'] = ['Archiv löschen', 'Archiv ID %s löschen'];
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['show'] = ['Archivdetails', 'Details des Archivs ID %s anzeigen'];
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['new'] = ['Neues Archiv', 'Ein neues Archiv erstellen'];
+
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['reviewerType'] = ['Standard-Prüfer: Art', 'Vorbelegung für die erste Prüfung eines Eintrags.'];
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['reviewerName'] = ['Standard-Prüfer: Name', 'Vorbelegung für die erste Prüfung eines Eintrags.'];
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['reviewerTypes'] = ['Person' => 'Person', 'Organization' => 'Organisation'];
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['review_legend'] = 'Standard-Prüfer';

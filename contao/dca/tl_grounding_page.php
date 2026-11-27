@@ -9,7 +9,7 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
     'config' => [
         'dataContainer'    => DC_Table::class,
         'ptable'           => 'tl_grounding_page_archive',
-        'ctable'           => ['tl_content'],
+        'ctable'           => ['tl_content', 'tl_grounding_page_review'],
         'enableVersioning' => true,
         'switchToEdit'     => true,
         'markAsCopy'       => 'title',
@@ -39,6 +39,10 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
         'operations' => [
             'edit',
             'children',
+            'reviews' => [
+                'href' => 'key=reviews',
+                'icon' => 'ok.svg',
+            ],
             'copy',
             'cut',
             'delete',

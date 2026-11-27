@@ -13,15 +13,16 @@ $GLOBALS['TL_LANG']['tl_module']['grounding_page_legend'] = 'Grounding-Page Eins
 
 $GLOBALS['TL_LANG']['tl_user_group']['grounding_page_legend'] = 'Grounding-Pages';
 $GLOBALS['TL_LANG']['tl_user_group']['groundingPages'] = ['Erlaubte Archive', 'Wählen Sie aus, welche Grounding-Page-Archive diese Gruppe verwalten darf.'];
-$GLOBALS['TL_LANG']['tl_user_group']['groundingPagep'] = ['Berechtigungen', 'Legt fest, ob Mitglieder dieser Gruppe neue Archive anlegen bzw. Archive/Einträge löschen dürfen.'];
+$GLOBALS['TL_LANG']['tl_user_group']['groundingPagep'] = ['Berechtigungen', 'Legt fest, ob Mitglieder dieser Gruppe neue Archive anlegen, Archive/Einträge löschen und Prüfungen dokumentieren dürfen.'];
 $GLOBALS['TL_LANG']['tl_user_group']['groundingPagepRef'] = [
     'create' => 'Neue Archive anlegen',
     'delete' => 'Archive/Einträge löschen',
+    'review' => 'Prüfung dokumentieren',
 ];
 
 $GLOBALS['TL_LANG']['tl_user']['grounding_page_legend'] = 'Grounding-Pages';
 $GLOBALS['TL_LANG']['tl_user']['groundingPages'] = ['Erlaubte Archive', 'Wählen Sie aus, welche Grounding-Page-Archive dieser Benutzer verwalten darf.'];
-$GLOBALS['TL_LANG']['tl_user']['groundingPagep'] = ['Berechtigungen', 'Legt fest, ob der Benutzer neue Archive anlegen bzw. Archive/Einträge löschen darf.'];
+$GLOBALS['TL_LANG']['tl_user']['groundingPagep'] = ['Berechtigungen', 'Legt fest, ob der Benutzer neue Archive anlegen, Archive/Einträge löschen und Prüfungen dokumentieren darf.'];
 
 $GLOBALS['TL_LANG']['MSC']['grounding_page_empty'] = 'Es sind noch keine Einträge vorhanden.';
 $GLOBALS['TL_LANG']['MSC']['grounding_page_facts'] = '%s: Kerndaten';

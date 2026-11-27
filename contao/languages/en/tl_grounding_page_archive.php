@@ -16,3 +16,8 @@ $GLOBALS['TL_LANG']['tl_grounding_page_archive']['copy'] = ['Duplicate archive',
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['delete'] = ['Delete archive', 'Delete archive ID %s'];
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['show'] = ['Archive details', 'Show the details of archive ID %s'];
 $GLOBALS['TL_LANG']['tl_grounding_page_archive']['new'] = ['New archive', 'Create a new archive'];
+
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['reviewerType'] = ['Default reviewer: type', 'Prefills the first review of an entry.'];
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['reviewerName'] = ['Default reviewer: name', 'Prefills the first review of an entry.'];
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['reviewerTypes'] = ['Person' => 'Person', 'Organization' => 'Organization'];
+$GLOBALS['TL_LANG']['tl_grounding_page_archive']['review_legend'] = 'Default reviewer';

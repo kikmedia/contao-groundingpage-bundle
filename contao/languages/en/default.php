@@ -13,15 +13,16 @@ $GLOBALS['TL_LANG']['tl_module']['grounding_page_legend'] = 'Grounding Page sett
 
 $GLOBALS['TL_LANG']['tl_user_group']['grounding_page_legend'] = 'Grounding Pages';
 $GLOBALS['TL_LANG']['tl_user_group']['groundingPages'] = ['Allowed archives', 'Select which Grounding Page archives this group may manage.'];
-$GLOBALS['TL_LANG']['tl_user_group']['groundingPagep'] = ['Permissions', 'Defines whether members of this group may create new archives and/or delete archives/entries.'];
+$GLOBALS['TL_LANG']['tl_user_group']['groundingPagep'] = ['Permissions', 'Defines whether members of this group may create new archives, delete archives/entries and document reviews.'];
 $GLOBALS['TL_LANG']['tl_user_group']['groundingPagepRef'] = [
     'create' => 'Create new archives',
     'delete' => 'Delete archives/entries',
+    'review' => 'Document reviews',
 ];
 
 $GLOBALS['TL_LANG']['tl_user']['grounding_page_legend'] = 'Grounding Pages';
 $GLOBALS['TL_LANG']['tl_user']['groundingPages'] = ['Allowed archives', 'Select which Grounding Page archives this user may manage.'];
-$GLOBALS['TL_LANG']['tl_user']['groundingPagep'] = ['Permissions', 'Defines whether the user may create new archives and/or delete archives/entries.'];
+$GLOBALS['TL_LANG']['tl_user']['groundingPagep'] = ['Permissions', 'Defines whether the user may create new archives, delete archives/entries and document reviews.'];
 
 $GLOBALS['TL_LANG']['MSC']['grounding_page_empty'] = 'There are no entries yet.';
 $GLOBALS['TL_LANG']['MSC']['grounding_page_facts'] = '%s: Key facts';

@@ -57,3 +57,4 @@ $GLOBALS['TL_LANG']['tl_grounding_page']['toggle'] = ['Toggle publication', 'Tog
 $GLOBALS['TL_LANG']['tl_grounding_page']['show'] = ['Entry details', 'Show the details of entry ID %s'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['new'] = ['New entry', 'Create a new entry'];
 $GLOBALS['TL_LANG']['tl_grounding_page']['children'] = ['Content elements', 'Edit the content elements of entry ID %s'];
+$GLOBALS['TL_LANG']['tl_grounding_page']['reviews'] = ['Reviews', 'Reviews of entry ID %s'];

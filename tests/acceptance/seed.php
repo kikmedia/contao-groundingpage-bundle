@@ -20,7 +20,7 @@ $stored = static fn (string $value): string => $contao6
     ? $value
     : str_replace(['<', '>', '"', '(', ')', '='], ['&#60;', '&#62;', '&#34;', '&#40;', '&#41;', '&#61;'], $value);
 
-foreach (['tl_theme', 'tl_layout', 'tl_page', 'tl_article', 'tl_module', 'tl_content', 'tl_files', 'tl_user_group', 'tl_grounding_page_archive', 'tl_grounding_page'] as $table) {
+foreach (['tl_theme', 'tl_layout', 'tl_page', 'tl_article', 'tl_module', 'tl_content', 'tl_files', 'tl_user_group', 'tl_grounding_page_archive', 'tl_grounding_page', 'tl_grounding_page_review'] as $table) {
     $db->exec("DELETE FROM `$table`");
 }
 
@@ -110,8 +110,18 @@ $element(11, 1, 'grounding_page_faq', [
 ]);
 $element(30, 20, 'text', ['text' => '<p>Geheimtext</p>']);
 
+$entry(50, 'Pruefling', [
+    'definition' => 'ist ein Testobjekt.',
+    'distinction' => 'Nicht zu verwechseln.',
+    'coreFacts' => serialize([['value' => '2020', 'label' => 'Gegründet']]),
+    'sources' => serialize([['value' => 'https://example.com/pruefling', 'label' => 'Quelle']]),
+]);
+$element(50, 50, 'text', ['text' => '<h2>Über Pruefling</h2><p>Inhalt</p>']);
+$element(51, 50, 'element_group', []);
+$element(52, 51, 'text', ['ptable' => 'tl_content', 'text' => '<p>Verschachtelt</p>']);
+
 $put('tl_page', $page + ['id' => 10, 'pid' => 0, 'sorting' => 256, 'title' => 'English', 'alias' => 'english', 'type' => 'root', 'language' => 'en', 'fallback' => 0, 'urlPrefix' => 'en', 'includeLayout' => 1, 'layout' => 1, 'useSSL' => 0, 'chmod' => '']);
-$put('tl_page', $page + ['id' => 12, 'pid' => 10, 'sorting' => 128, 'title' => 'Fact', 'alias' => 'fact', 'type' => 'regular', 'requireItem' => 1]);
+$put('tl_page', $page + ['id' => 12, 'pid' => 10, 'sorting' => 128, 'title' => 'Fact', 'alias' => 'fact', 'type' => 'regular', 'requireItem' => 1, 'includeCache' => 1, 'cache' => 3600]);
 $put('tl_article', ['id' => 12, 'pid' => 12, 'sorting' => 128, 'tstamp' => $now, 'title' => 'Article', 'alias' => 'article-12', 'author' => $author, 'inColumn' => 'main', 'published' => 1]);
 $put('tl_content', ['id' => 12, 'pid' => 12, 'ptable' => 'tl_article', 'sorting' => 128, 'tstamp' => $now, 'type' => 'module', 'module' => 3]);
 $put('tl_module', ['id' => 3, 'pid' => 1, 'tstamp' => $now, 'name' => 'reader en', 'type' => 'grounding_page_reader', 'grounding_page_archives' => serialize(['3'])]);
