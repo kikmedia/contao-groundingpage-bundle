@@ -154,7 +154,17 @@ composer install
 | `composer cs-check` | Code-Style prüfen |
 | `composer cs-fix` | Code-Style korrigieren |
 
-Die Unit-Tests decken die Logik ab, die ohne Datenbank auskommt. Backend, Berechtigungen und Frontend-Ausgabe müssen gegen eine echte Contao-Installation geprüft werden.
+Die Unit-Tests decken die Logik ab, die ohne Datenbank auskommt.
+
+### Abnahmetest
+
+Der Abnahmetest installiert eine Contao Managed Edition mit dem Bundle aus dem Arbeitsverzeichnis, legt Testdaten an und prüft Frontend, Sitemap, Backend-Formulare und Berechtigungen über HTTP. Er braucht PHP, Composer, `curl`, die PHP-Erweiterungen `gd`, `intl` und `pdo_mysql` sowie eine **leere** MariaDB- oder MySQL-Datenbank. Die Datenbank wird beschrieben, also nie eine mit echten Inhalten angeben. Port 8000 muss frei sein.
+
+```bash
+DATABASE_URL="mysql://root@127.0.0.1:3306/contao_test?serverVersion=10.11.0-MariaDB" tests/acceptance/run.sh "5.7.*"
+```
+
+Die CI führt den Test für alle oben als getestet genannten Kombinationen aus.
 
 ## Fehler melden
 
