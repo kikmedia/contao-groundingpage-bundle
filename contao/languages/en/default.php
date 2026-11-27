@@ -26,3 +26,8 @@ $GLOBALS['TL_LANG']['tl_user']['groundingPages'] = ['Allowed archives', 'Select 
 $GLOBALS['TL_LANG']['tl_user']['groundingPagep'] = ['Permissions', 'Defines whether the user may create new archives and/or delete archives/entries.'];
 
 $GLOBALS['TL_LANG']['MSC']['grounding_page_empty'] = 'There are no entries yet.';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_facts'] = '%s: Key facts';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_sources'] = 'Sources for %s';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_related'] = 'Related:';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_reviewed'] = 'Last reviewed';
+$GLOBALS['TL_LANG']['MSC']['grounding_page_modified'] = 'Last updated';

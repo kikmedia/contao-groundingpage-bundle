@@ -106,6 +106,33 @@ function check(string $name, bool $passed, string $info = ''): void
     echo ($passed ? 'PASS ' : 'FAIL ') . $name . (!$passed && '' !== $info ? "  [$info]" : '') . "\n";
 }
 
+function linkedData(string $html): array
+{
+    preg_match_all('~<script type="application/ld\+json">(.*?)</script>~s', $html, $blocks);
+    $nodes = [];
+
+    foreach ($blocks[1] as $block) {
+        $data = json_decode(trim($block), true) ?? ['@type' => 'INVALID'];
+
+        if ('https://schema.contao.org' !== ($data['@context'] ?? '')) {
+            array_push($nodes, ...($data['@graph'] ?? [$data]));
+        }
+    }
+
+    return $nodes;
+}
+
+function nodeOfType(array $nodes, string $type): array
+{
+    foreach ($nodes as $node) {
+        if ($type === ($node['@type'] ?? null)) {
+            return $node;
+        }
+    }
+
+    return [];
+}
+
 function absoluteUrl(string $url): string
 {
     if (str_starts_with($url, 'http')) {

@@ -196,7 +196,7 @@ $GLOBALS['TL_DCA']['tl_grounding_page'] = [
         'lastReviewed' => [
             'inputType' => 'text',
             'exclude'   => true,
-            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'doNotCopy' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => ['type' => 'string', 'length' => 10, 'default' => ''],
         ],
 

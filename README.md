@@ -1,10 +1,12 @@
 # Contao Grounding-Page Bundle
 
-Contao-Erweiterung, mit der sich Referenzseiten nach dem offenen **[Grounding Page Standard v1.6](https://groundingpage.com/spec/)** im Backend pflegen und im Frontend ausgeben lassen – mit JSON-LD, FAQ-Element, Sitemap-Integration und eigenen Backend-Berechtigungen.
+Contao-Erweiterung, mit der sich Referenzseiten nach dem offenen **[Grounding Page Standard](https://groundingpage.com/spec/)** im Backend pflegen und im Frontend ausgeben lassen – mit JSON-LD, FAQ-Element, Sitemap-Integration und eigenen Backend-Berechtigungen.
 
 > **Status: Alpha.** Datenbankfelder, Templates und PHP-Schnittstellen können sich bis zur Version 1.0 noch ändern. Bitte vor dem Einsatz auf einem Testsystem ausprobieren und vor Updates die Datenbank sichern.
 
 Eine *Grounding Page* ist eine faktenbasierte Referenzseite zu genau einer Entität (Unternehmen, Produkt, Person, Begriff …), die für Menschen lesbar und für KI-Systeme maschinenlesbar aufgebaut ist. Details: [groundingpage.com/spec](https://groundingpage.com/spec/de/).
+
+Der Funktionsumfang orientiert sich an Version 1.6 des Standards. Die Neuerungen aus 1.7 und 2.0 sind noch nicht umgesetzt, der Fahrplan steht in [Issue #5](https://github.com/kikmedia/contao-groundingpage-bundle/issues/5).
 
 ## Funktionen
 
@@ -15,7 +17,7 @@ Eine *Grounding Page* ist eine faktenbasierte Referenzseite zu genau einer Entit
 - JSON-LD für die Entität und, falls FAQ-Elemente vorhanden sind, zusätzlich als `FAQPage`
 - Aufnahme in die `sitemap.xml` der passenden Website-Root
 - Berechtigungen je Archiv sowie für Anlegen und Löschen
-- Deutsche und englische Backend-Sprachdateien
+- Deutsche und englische Sprachdateien für Backend und Frontend
 
 ## Voraussetzungen
 
@@ -86,14 +88,29 @@ Fakten, Quellen und FAQ nutzen Contaos Optionen-Assistenten mit den Spalten **We
 
 ## JSON-LD
 
-Der Reader gibt einen JSON-LD-Block aus, der nur sichtbare Inhalte spiegelt:
+Der Reader spiegelt nur sichtbare Inhalte und trennt zwischen der Entität und der Seite, die sie beschreibt.
+
+**Block für die Entität:**
 
 - `@type`, `name`, `description` und `url`
-- `dateModified` aus „Zuletzt geprüft am“
-- `additionalProperty` aus den Fakten
+- `additionalProperty` aus den Fakten, sofern Schema.org die Eigenschaft für den Typ vorsieht
+
+`additionalProperty` erhalten die Typen `Accommodation`, `AdministrativeArea`, `CivicStructure`, `IndividualProduct`, `Landform`, `LocalBusiness`, `Place`, `Product`, `ProductGroup`, `ProductModel`, `Residence`, `TouristAttraction` und `Vehicle`, auch wenn sie als eigener Typ eingetragen sind. Bei allen anderen Typen, zum Beispiel `Organization` oder `Person`, stehen die Fakten sichtbar auf der Seite, aber nicht im JSON-LD.
+
+**`WebPage`-Knoten**, den Contao selbst im Schema.org-Graphen anlegt:
+
+- `dateModified`: Datum der letzten Änderung am Eintrag oder an seinen Inhaltselementen
 - `citation` aus den Quellen
 
-Enthält der Eintrag FAQ-Elemente, folgt ein zweiter Block vom Typ [`FAQPage`](https://schema.org/FAQPage).
+Enthält der Eintrag FAQ-Elemente, folgt ein weiterer Block vom Typ [`FAQPage`](https://schema.org/FAQPage).
+
+„Zuletzt geprüft am“ erscheint sichtbar auf der Seite, wird aber nicht als `lastReviewed` ausgezeichnet.
+
+## Sprache
+
+Die Zwischenüberschriften und Datumsbeschriftungen im Reader folgen der Sprache der Website-Root. Mitgeliefert werden Deutsch und Englisch. Die Inhalte selbst werden je Sprache in eigenen Einträgen gepflegt, zum Beispiel in einem Archiv je Sprache.
+
+Eigene Texte oder weitere Sprachen lassen sich im Projekt über die Schlüssel `MSC.grounding_page_*` ergänzen.
 
 ## Berechtigungen
 
@@ -122,7 +139,8 @@ Das Bundle liefert bewusst kein CSS. Jedes Archiv kann eine CSS-Klasse erhalten,
 
 ## Bekannte Einschränkungen
 
-- Die Zwischenüberschriften im Reader („Kerndaten“, „Zuletzt geprüft“, „Verwandt“, „Quellen“) sind nur auf Deutsch vorhanden.
+- Mehrsprachige Einträge sind nicht miteinander verknüpft, gemeinsam genutzte Werte gibt es noch nicht.
+- Das Löschen oder Ausblenden eines Inhaltselements ändert das Datum „Zuletzt aktualisiert“ nicht. Dazu den Eintrag selbst ändern und speichern.
 - Legt ein Benutzer ohne Administratorrechte ein neues Archiv an, muss ihm dieses anschließend in den Berechtigungen freigegeben werden.
 - Der Reader setzt weder Seitentitel noch Meta-Beschreibung aus dem Eintrag.
 - Antworten im FAQ-Element sind einzeiliger Text ohne Formatierung.

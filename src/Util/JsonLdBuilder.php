@@ -9,6 +9,11 @@ use Kikmedia\GroundingPageBundle\Model\GroundingPageModel;
 
 final class JsonLdBuilder
 {
+    private const TYPES_WITH_ADDITIONAL_PROPERTY = [
+        'Accommodation', 'AdministrativeArea', 'CivicStructure', 'IndividualProduct', 'Landform', 'LocalBusiness',
+        'Place', 'Product', 'ProductGroup', 'ProductModel', 'Residence', 'TouristAttraction', 'Vehicle',
+    ];
+
     private const FLAGS = \JSON_HEX_TAG | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE | \JSON_PRETTY_PRINT;
 
     public static function build(GroundingPageModel $entry, string $canonicalUrl, bool $inputEncoded = false): string
@@ -27,15 +32,9 @@ final class JsonLdBuilder
             'url'         => $canonicalUrl,
         ];
 
-        $reviewed = ReviewDate::iso($entry->lastReviewed);
-
-        if (null !== $reviewed) {
-            $data['dateModified'] = $reviewed;
-        }
-
         $facts = array_filter((array) StringUtil::deserialize($entry->coreFacts, true));
 
-        if (!empty($facts)) {
+        if (!empty($facts) && \in_array($data['@type'], self::TYPES_WITH_ADDITIONAL_PROPERTY, true)) {
             $data['additionalProperty'] = array_values(array_filter(array_map(
                 static function (array $fact) use ($text): array|null {
                     if (empty($fact['label']) || !isset($fact['value']) || '' === $fact['value']) {
@@ -50,6 +49,20 @@ final class JsonLdBuilder
                 },
                 $facts
             )));
+        }
+
+        $data = array_filter($data, static fn ($value) => null !== $value && '' !== $value && [] !== $value);
+
+        return json_encode($data, self::FLAGS) ?: '{}';
+    }
+
+    public static function pageProperties(GroundingPageModel $entry, int|null $modified, bool $inputEncoded = false): array
+    {
+        $text = static fn (mixed $value): string => PlainText::decode($value, $inputEncoded);
+        $data = [];
+
+        if ($modified) {
+            $data['dateModified'] = date('Y-m-d', $modified);
         }
 
         $sources = array_filter((array) StringUtil::deserialize($entry->sources, true));
@@ -71,9 +84,7 @@ final class JsonLdBuilder
             )));
         }
 
-        $data = array_filter($data, static fn ($value) => null !== $value && '' !== $value && [] !== $value);
-
-        return json_encode($data, self::FLAGS) ?: '{}';
+        return array_filter($data);
     }
 
     public static function buildFaqPage(array $items, string $canonicalUrl, bool $inputEncoded = false): string|null

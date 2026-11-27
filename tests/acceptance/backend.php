@@ -74,4 +74,6 @@ if (null !== $clipboard) {
     $copied = $admin->get($entryListUrl)->body;
     check('admin: copy creates a second entry', substr_count($copied, 'VeloNova Neu') > substr_count($entries, 'VeloNova Neu'));
     check('admin: copy is not published', 1 === substr_count($visitor->get('/fakten')->body, '>VeloNova Neu<'));
+    $reviewOfCopy = database()->query("SELECT lastReviewed FROM tl_grounding_page WHERE title LIKE 'VeloNova Neu%' ORDER BY id DESC LIMIT 1")->fetchColumn();
+    check('admin: copy carries no review date', '' === $reviewOfCopy, var_export($reviewOfCopy, true));
 }
