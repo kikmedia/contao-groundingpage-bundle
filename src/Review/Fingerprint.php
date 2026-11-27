@@ -95,8 +95,13 @@ final class Fingerprint
             $row = array_merge($row, $virtual);
         }
 
-        $row = array_diff_key($row, array_flip(self::IGNORED_ELEMENT_FIELDS));
-        $fields = self::withoutEmpty(array_map(self::normalise(...), $row));
+        $fields = [];
+
+        foreach (array_diff_key($row, array_flip(self::IGNORED_ELEMENT_FIELDS)) as $name => $value) {
+            $fields[$name] = self::normalise($value);
+        }
+
+        $fields = self::withoutEmpty($fields);
         ksort($fields);
 
         return $fields;
@@ -114,10 +119,15 @@ final class Fingerprint
         }
 
         if (\is_array($value)) {
-            $items = array_filter(
-                array_map(self::normalise(...), $value),
-                static fn (mixed $item): bool => !\in_array($item, [null, '', []], true)
-            );
+            $items = [];
+
+            foreach ($value as $key => $item) {
+                $item = self::normalise($item);
+
+                if (!\in_array($item, [null, '', []], true)) {
+                    $items[$key] = $item;
+                }
+            }
 
             if (array_is_list($value)) {
                 return array_values($items);
