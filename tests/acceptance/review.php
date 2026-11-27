@@ -32,14 +32,23 @@ $permissions = static function (array $granted) use ($db): void {
     }
 };
 
+$spaced = static function (string $html): bool {
+    $page = xpath($html);
+    $class = static fn (string $name): string => "contains(concat(' ', normalize-space(@class), ' '), ' $name ')";
+    $boxes = "//div[{$class('tl_tbox')}]";
+
+    return $page->query($boxes)->length > 0 && 0 === $page->query("$boxes/*[not({$class('widget')}) and not({$class('tl_listing_container')})]")->length;
+};
 $list = $admin->get('/contao?do=grounding_page&table=tl_grounding_page&id=1')->body;
 check('review: operation in entry list', null !== linkTo($list, ['key=reviews', 'id=50']));
 open($admin, 'review: protocol page', $reviews(50), 'name="reviewerName"');
 check('review: nothing documented by opening', 0 === $count(50));
+check('layout: empty protocol keeps the back end spacing', $spaced($admin->get($reviews(50))->body));
 
 $permissions([]);
 $page = open($editor, 'review: editor without permission reads', $reviews(50), 'Pruefling');
 check('review: no form without permission', !str_contains($page, 'name="reviewerName"'));
+check('layout: read-only protocol keeps the back end spacing', $spaced($page));
 check('review: forged posts carry a token and a fingerprint', '' !== $token($editor) && '' !== $forgedReview(50)['fingerprint']);
 $forge($editor, 50, $forgedReview(50));
 check('review: forged post without permission stores nothing', 0 === $count(50));
@@ -130,6 +139,7 @@ submit($admin, $entryForm, ['coreFacts' => [['value' => '2021', 'label' => 'Gegr
 check('notice: gone after a changed fact', str_contains($column('SELECT coreFacts FROM tl_grounding_page WHERE id=50'), '2021') && !$shown());
 
 $records = $count(50);
+check('layout: protocol with records keeps the back end spacing', $spaced($admin->get($reviews(50))->body) && $admin->get($reviews(50))->contains('tl_grounding_page_review_minor'));
 submit($editor, $reviews(50), ['note' => ''], 'tl_grounding_page_review_minor');
 check('minor: note required', $records === $count(50) && !$shown());
 submit($editor, $reviews(50), ['note' => 'Tippfehler'], 'tl_grounding_page_review_minor');
